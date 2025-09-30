@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CalendarIcon, ChevronDown, ChevronDownIcon } from "lucide-react"
+import { CalendarIcon, ChevronDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -14,8 +14,6 @@ import {
 import {
     format,
     startOfDay,
-    min as minDate,
-    max as maxDate,
     isBefore,
     isAfter,
 } from "date-fns"

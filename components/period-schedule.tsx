@@ -57,8 +57,11 @@ export function PeriodSchedule({
     const toggle = (day: DayKey, period: number) => {
         setSchedule(prev => {
             const curr = new Set(prev[day] ?? [])
-            curr.has(period) ? curr.delete(period) : curr.add(period)
-            return { ...prev, [day]: Array.from(curr).sort((a, b) => a - b) }
+            if (curr.has(period)) {
+                curr.delete(period)
+            } else {
+                curr.add(period)
+            } return { ...prev, [day]: Array.from(curr).sort((a, b) => a - b) }
         })
     }
 
