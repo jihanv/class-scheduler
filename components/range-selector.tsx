@@ -22,7 +22,6 @@ export function RangeSelector() {
     const [holidays, setHolidays] = React.useState<Date[]>([])
 
 
-
     const days = React.useMemo(() => {
         if (!startDate || !endDate) return []
         const start = startOfDay(minDate([startDate, endDate]))
@@ -56,16 +55,17 @@ export function RangeSelector() {
                     />
                 )}
 
-                {/* Show holiday picker once a complete range exists */}
-                {startDate && endDate && (
-                    <HolidayPicker
-                        holidays={holidays}
-                        setHolidaysAction={setHolidays}
-                        minDate={minDate([startDate, endDate])}
-                        maxDate={maxDate([startDate, endDate])}
-                    />
-                )}
+
             </div>
+            {/* Show holiday picker once a complete range exists */}
+            {startDate && endDate && (
+                <HolidayPicker
+                    holidays={holidays}
+                    setHolidaysAction={setHolidays}
+                    minDate={minDate([startDate, endDate])}
+                    maxDate={maxDate([startDate, endDate])}
+                />
+            )}
             {endDate && <PeriodSchedule
                 value={schedule}
                 onChange={setSchedule}

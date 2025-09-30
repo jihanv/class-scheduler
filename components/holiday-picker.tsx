@@ -29,7 +29,7 @@ export function HolidayPicker({
     const count = holidays.length
 
     return (
-        <div className="flex flex-col gap-2">
+        <><div className="flex flex-col gap-2">
             <Label className="px-1">{label}</Label>
 
             <Popover open={open} onOpenChange={setOpen}>
@@ -58,19 +58,18 @@ export function HolidayPicker({
                     />
                 </PopoverContent>
             </Popover>
+        </div>{count > 0 && (
+            <ul className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                {holidays.map((h) => {
+                    const key = format(h, "yyyy-MM-dd")
+                    return (
+                        <li key={key} className="rounded bg-accent px-2 py-0.5">
+                            {format(h, "MMM d", { locale: enUS })}
+                        </li>
+                    )
+                })}
+            </ul>
+        )}</>
 
-            {count > 0 && (
-                <ul className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                    {holidays.map((h) => {
-                        const key = format(h, "yyyy-MM-dd")
-                        return (
-                            <li key={key} className="rounded bg-accent px-2 py-0.5">
-                                {format(h, "MMM d", { locale: enUS })}
-                            </li>
-                        )
-                    })}
-                </ul>
-            )}
-        </div>
     )
 }
