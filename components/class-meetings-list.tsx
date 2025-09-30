@@ -24,7 +24,7 @@ type Props = {
 }
 
 export function ClassMeetingsList({ days, schedule, title = "Classes" }: Props) {
-    if (!schedule || days.length === 0) return null
+    // if (!schedule || days.length === 0) return null
 
     const items = React.useMemo(() => {
         const out: { date: Date; period: number }[] = []
