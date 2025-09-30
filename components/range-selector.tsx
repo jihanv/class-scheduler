@@ -12,6 +12,7 @@ import { DateSelector } from "./date-selector"
 import { enUS } from "date-fns/locale"
 import { DaysInRange } from "./dates-in-range"
 import { PeriodSchedule, ScheduleValue } from "./period-schedule"
+import { ClassMeetingsList } from "./class-meetings-list"
 
 /** One shadcn-style date picker (popover + button) */
 
@@ -53,6 +54,8 @@ export function RangeSelector() {
                 onChange={setSchedule}
                 periods={7}
             />}
+            {true && <ClassMeetingsList days={days} schedule={schedule} />
+            }
 
         </div>
     )
