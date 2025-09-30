@@ -11,6 +11,7 @@ import {
 import { DateSelector } from "./date-selector"
 import { enUS } from "date-fns/locale"
 import { DaysInRange } from "./dates-in-range"
+import { PeriodSchedule, ScheduleValue } from "./period-schedule"
 
 /** One shadcn-style date picker (popover + button) */
 
@@ -18,6 +19,8 @@ import { DaysInRange } from "./dates-in-range"
 export function RangeSelector() {
     const [startDate, setStartDate] = React.useState<Date | undefined>()
     const [endDate, setEndDate] = React.useState<Date | undefined>()
+    const [schedule, setSchedule] = React.useState<ScheduleValue>()
+
 
     const days = React.useMemo(() => {
         if (!startDate || !endDate) return []
@@ -43,7 +46,13 @@ export function RangeSelector() {
                         disabledBefore={startDate}
                     />
                 )}
+
             </div>
+            {endDate && <PeriodSchedule
+                value={schedule}
+                onChange={setSchedule}
+                periods={7}
+            />}
 
         </div>
     )
