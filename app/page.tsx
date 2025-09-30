@@ -1,7 +1,7 @@
-import Image from "next/image";
+import RangeSelector from "@/components/range-selector";
 
 export default function Home() {
   return (
-    <h1>Class Schedule</h1>
+    <RangeSelector />
   );
 }
