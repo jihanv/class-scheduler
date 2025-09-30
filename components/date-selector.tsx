@@ -31,13 +31,13 @@ export type DateSelectorProps = {
 export function DateSelector({
     label,
     date,
-    setDate,
+    setDateAction,
     disabledBefore,
     disabledAfter,
 }: {
     label: string
     date: Date | undefined
-    setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
+    setDateAction: React.Dispatch<React.SetStateAction<Date | undefined>>
     /** If provided, dates strictly before this are disabled */
     disabledBefore?: Date
     /** If provided, dates strictly after this are disabled */
@@ -65,7 +65,7 @@ export function DateSelector({
                         locale={enUS}
                         selected={date}
                         onSelect={(d) => {
-                            setDate(d)
+                            setDateAction(d)
                             setOpen(false)
                         }}
                         // keep SSR/CSR consistent & restrict invalid days

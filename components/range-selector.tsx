@@ -39,19 +39,19 @@ export function RangeSelector() {
 
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap gap-4">
+        <div className="flex flex-col gap-4 items-center mt-9">
+            <div className="flex flex-col gap-4">
                 <DateSelector
                     label="Start date"
                     date={startDate}
-                    setDate={setStartDate}
+                    setDateAction={setStartDate}
                     disabledAfter={endDate}     // optional: prevent picking after the current end
                 />
                 {startDate && (
                     <DateSelector
                         label="End date"
                         date={endDate}
-                        setDate={setEndDate}
+                        setDateAction={setEndDate}
                         disabledBefore={startDate}
                     />
                 )}
@@ -60,7 +60,7 @@ export function RangeSelector() {
                 {startDate && endDate && (
                     <HolidayPicker
                         holidays={holidays}
-                        setHolidays={setHolidays}
+                        setHolidaysAction={setHolidays}
                         minDate={minDate([startDate, endDate])}
                         maxDate={maxDate([startDate, endDate])}
                     />

@@ -11,7 +11,7 @@ import { enUS } from "date-fns/locale"
 
 type HolidayPickerProps = {
     holidays: Date[]
-    setHolidays: React.Dispatch<React.SetStateAction<Date[]>>
+    setHolidaysAction: React.Dispatch<React.SetStateAction<Date[]>>
     label?: string
     /** (optional) clamp selection to the active range */
     minDate?: Date
@@ -20,7 +20,7 @@ type HolidayPickerProps = {
 
 export function HolidayPicker({
     holidays,
-    setHolidays,
+    setHolidaysAction,
     label = "Holidays",
     minDate,
     maxDate,
@@ -48,7 +48,7 @@ export function HolidayPicker({
                         mode="multiple"
                         locale={enUS}
                         selected={holidays}
-                        onSelect={(dates) => setHolidays(dates ?? [])}
+                        onSelect={(dates) => setHolidaysAction(dates ?? [])}
                         disabled={(d) => {
                             const sd = startOfDay(d)
                             if (minDate && isBefore(sd, startOfDay(minDate))) return true
