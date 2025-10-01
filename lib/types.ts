@@ -8,6 +8,9 @@ export type RangeStore = {
   setEndDate: (date: Date | undefined) => void;
 
   schedule: ScheduleValue | undefined;
+
+  showClassList: boolean;
+  setShowClassList: () => void;
 };
 
 export type ScheduleValue = Record<DayKey, number[]>; // e.g. { mon:[1,2], wed:[3], ... }
@@ -42,7 +45,18 @@ export type HolidayPickerProps = {
   holidays: Date[];
   setHolidaysAction: React.Dispatch<React.SetStateAction<Date[]>>;
   label?: string;
-  /** (optional) clamp selection to the active range */
-  // minDate?: Date;
-  // maxDate?: Date;
+};
+
+export type PeriodScheduleProps = {
+  /** Controlled value: which periods are selected for each day */
+  value?: ScheduleValue;
+  /** Uncontrolled initial value */
+  defaultValue?: ScheduleValue;
+  /** Called whenever selection changes */
+  onChange?: (next: ScheduleValue) => void;
+  /** How many periods per day (default 7) */
+  periods?: number;
+  /** Optional: reorder or relabel columns */
+  days?: { key: DayKey; label: string }[];
+  className?: string;
 };

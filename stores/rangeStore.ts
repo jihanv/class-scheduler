@@ -15,4 +15,8 @@ export const useRangeStore = create<RangeStore>((set) => ({
   },
 
   schedule: undefined,
+
+  showClassList: false,
+  setShowClassList: () =>
+    set((state) => ({ showClassList: !state.showClassList })),
 }));

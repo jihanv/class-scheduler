@@ -3,32 +3,10 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { DayKey, ScheduleValue } from "@/lib/types"
+import { DayKey, PeriodScheduleProps, ScheduleValue } from "@/lib/types"
+import { DAY_ORDER } from "@/lib/constants"
+import { useRangeStore } from "@/stores/rangeStore"
 
-
-const DAY_ORDER: { key: DayKey; label: string }[] = [
-    { key: "mon", label: "Mon" },
-    { key: "tue", label: "Tue" },
-    { key: "wed", label: "Wed" },
-    { key: "thu", label: "Thu" },
-    { key: "fri", label: "Fri" },
-    { key: "sat", label: "Sat" },
-    { key: "sun", label: "Sun" },
-]
-
-export type PeriodScheduleProps = {
-    /** Controlled value: which periods are selected for each day */
-    value?: ScheduleValue
-    /** Uncontrolled initial value */
-    defaultValue?: ScheduleValue
-    /** Called whenever selection changes */
-    onChange?: (next: ScheduleValue) => void
-    /** How many periods per day (default 7) */
-    periods?: number
-    /** Optional: reorder or relabel columns */
-    days?: { key: DayKey; label: string }[]
-    className?: string
-}
 
 const makeEmpty = (): ScheduleValue => ({
     mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [],
@@ -51,7 +29,7 @@ export function PeriodSchedule({
         if (value === undefined) setInternal(next)
         onChange?.(next)
     }
-
+    const { setShowClassList } = useRangeStore();
     const toggle = (day: DayKey, period: number) => {
         setSchedule(prev => {
             const curr = new Set(prev[day] ?? [])
@@ -62,9 +40,9 @@ export function PeriodSchedule({
             } return { ...prev, [day]: Array.from(curr).sort((a, b) => a - b) }
         })
     }
-
+    const { startDate, setStartDate, endDate, setEndDate } = useRangeStore();
     return (
-        <div className={cn("rounded-md border w-xl", className)}>
+        (startDate && endDate && <><div className="rounded-md border w-xl mt-5">
             <table className="w-full border-collapse">
                 <thead>
                     <tr>
@@ -99,5 +77,7 @@ export function PeriodSchedule({
                 </tbody>
             </table>
         </div>
-    )
+            <Button className="mt-5" onClick={() => setShowClassList()}>Calculate</Button>
+        </>
+        ))
 }

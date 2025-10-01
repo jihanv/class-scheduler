@@ -58,19 +58,8 @@ export function RangeSelector() {
                 )}
             </div>
             {/* Show holiday picker once a complete range exists */}
-            {/* {startDate && endDate && (
-                <HolidayPicker
-                    holidays={holidays}
-                    setHolidaysAction={setHolidays}
-                    minDate={minDate([startDate, endDate])}
-                    maxDate={maxDate([startDate, endDate])}
-                />
-            )} */}
-            {/* {endDate && <PeriodSchedule
-                value={schedule}
-                onChange={setSchedule}
-                periods={7}
-            />} */}
+
+
             {/* {true && <ClassMeetingsList days={workingDays} schedule={schedule} />
             } */}
 

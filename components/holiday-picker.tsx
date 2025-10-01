@@ -53,7 +53,7 @@ export function HolidayPicker({
                 </PopoverContent>
             </Popover>
         </div>{count > 0 && (
-            <ul className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+            <ul className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-5">
                 {holidays.map((h) => {
                     const key = format(h, "yyyy-MM-dd")
                     return (

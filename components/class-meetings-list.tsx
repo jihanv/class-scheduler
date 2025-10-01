@@ -5,6 +5,7 @@ import { format } from "date-fns"
 import { enUS } from "date-fns/locale"
 import { DayKey, ScheduleValue } from "@/lib/types"
 import { IDX_TO_KEY } from "@/lib/constants"
+import { useRangeStore } from "@/stores/rangeStore"
 
 // Mirror your schedule shape: { mon:[1,2], wed:[3], ... }
 // export type ScheduleValue = {
@@ -28,6 +29,7 @@ type Props = {
 
 export function ClassMeetingsList({ days, schedule, title = "Classes" }: Props) {
 
+    const { showClassList } = useRangeStore()
     const items = React.useMemo(() => {
         if (!schedule || days.length === 0) return null
         const out: { date: Date; period: number }[] = []
@@ -48,7 +50,7 @@ export function ClassMeetingsList({ days, schedule, title = "Classes" }: Props) 
     if (items?.length === 0) return null
 
     return (
-        <div className="rounded-md border p-3">
+        showClassList && <div className=" flex flex-col justify-center items-center rounded-md border p-3">
             <div className="mb-2 text-sm text-muted-foreground">
                 {title} ({items?.length})
             </div>
