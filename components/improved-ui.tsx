@@ -212,8 +212,8 @@ export default function ImprovedSchedulerMock() {
             {/* Header */}
             <div className="mb-6 flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Class Schedule Planner</h1>
-                    <p className="text-muted-foreground">Pick a date range, exclude holidays, choose weekly periods, and generate all meeting dates.</p>
+                    <h1 className="text-2xl font-semibold tracking-tight">Jihan's Term Class Tracker</h1>
+                    {/* <p className="text-muted-foreground">Pick a date range, exclude holidays, choose weekly periods, and generate all meeting dates.</p> */}
                 </div>
                 <div className="hidden md:flex items-center gap-2">
                     {/* <Button variant="outline" size="sm" className="gap-2"><Download className="size-4" />Export CSV</Button> */}
