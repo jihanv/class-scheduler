@@ -18,15 +18,8 @@ import {
     isAfter,
 } from "date-fns"
 import { enUS } from "date-fns/locale"
-export type DateSelectorProps = {
-    label: string
-    date: Date | undefined
-    setDateAction: (date: Date | undefined) => void;
-    /** If provided, dates strictly before this are disabled */
-    disabledBefore?: Date
-    /** If provided, dates strictly after this are disabled */
-    disabledAfter?: Date
-}
+import { DateSelectorProps } from "@/lib/types"
+
 
 export function DateSelector({
     label,

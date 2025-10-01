@@ -3,6 +3,8 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { enUS } from "date-fns/locale"
+import { DayKey, ScheduleValue } from "@/lib/types"
+import { IDX_TO_KEY } from "@/lib/constants"
 
 // Mirror your schedule shape: { mon:[1,2], wed:[3], ... }
 // export type ScheduleValue = {
@@ -10,11 +12,9 @@ import { enUS } from "date-fns/locale"
 //     fri: number[]; sat: number[]; sun: number[];
 // }
 
-const IDX_TO_KEY = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const
-type DayKey = typeof IDX_TO_KEY[number]
 
 
-export type ScheduleValue = Record<DayKey, number[]>
+
 
 function dayKeyFromDate(d: Date): DayKey {
     return IDX_TO_KEY[d.getDay()]

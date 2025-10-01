@@ -6,30 +6,24 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react"
-import { format, startOfDay, isBefore, isAfter } from "date-fns"
+import { format, startOfDay, isBefore, isAfter, min, max } from "date-fns"
 import { enUS } from "date-fns/locale"
-
-type HolidayPickerProps = {
-    holidays: Date[]
-    setHolidaysAction: React.Dispatch<React.SetStateAction<Date[]>>
-    label?: string
-    /** (optional) clamp selection to the active range */
-    minDate?: Date
-    maxDate?: Date
-}
+import { HolidayPickerProps } from "@/lib/types"
+import { useRangeStore } from "@/stores/rangeStore"
 
 export function HolidayPicker({
     holidays,
     setHolidaysAction,
     label = "Holidays",
-    minDate,
-    maxDate,
+    // minDate,
+    // maxDate,
 }: HolidayPickerProps) {
     const [open, setOpen] = React.useState(false)
     const count = holidays.length
+    const { startDate, endDate } = useRangeStore();
 
     return (
-        <><div className="flex flex-col gap-2">
+        startDate && endDate && (<div className="flex flex-col items-center justify-center mt-8"><div className="flex flex-col gap-2">
             <Label className="px-1">{label}</Label>
 
             <Popover open={open} onOpenChange={setOpen}>
@@ -51,8 +45,8 @@ export function HolidayPicker({
                         onSelect={(dates) => setHolidaysAction(dates ?? [])}
                         disabled={(d) => {
                             const sd = startOfDay(d)
-                            if (minDate && isBefore(sd, startOfDay(minDate))) return true
-                            if (maxDate && isAfter(sd, startOfDay(maxDate))) return true
+                            if (min([startDate, endDate]) && isBefore(sd, startOfDay(min([startDate, endDate])))) return true
+                            if (max([startDate, endDate]) && isAfter(sd, startOfDay(max([startDate, endDate])))) return true
                             return false
                         }}
                     />
@@ -69,7 +63,7 @@ export function HolidayPicker({
                     )
                 })}
             </ul>
-        )}</>
+        )}</div>
 
-    )
+        ))
 }

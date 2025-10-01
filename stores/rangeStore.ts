@@ -1,11 +1,5 @@
+import { RangeStore } from "@/lib/types";
 import { create } from "zustand";
-
-type RangeStore = {
-  startDate: Date | undefined;
-  setStartDate: (date: Date | undefined) => void;
-  endDate: Date | undefined;
-  setEndDate: (date: Date | undefined) => void;
-};
 
 export const useRangeStore = create<RangeStore>((set) => ({
   startDate: undefined,
@@ -17,6 +11,8 @@ export const useRangeStore = create<RangeStore>((set) => ({
   endDate: undefined,
   setEndDate: (date) => {
     console.log(date);
-    return set({ startDate: date });
+    return set({ endDate: date });
   },
+
+  schedule: undefined,
 }));

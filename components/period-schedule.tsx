@@ -3,8 +3,8 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { DayKey, ScheduleValue } from "@/lib/types"
 
-type DayKey = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun"
 
 const DAY_ORDER: { key: DayKey; label: string }[] = [
     { key: "mon", label: "Mon" },
@@ -15,8 +15,6 @@ const DAY_ORDER: { key: DayKey; label: string }[] = [
     { key: "sat", label: "Sat" },
     { key: "sun", label: "Sun" },
 ]
-
-export type ScheduleValue = Record<DayKey, number[]> // e.g. { mon:[1,2], wed:[3], ... }
 
 export type PeriodScheduleProps = {
     /** Controlled value: which periods are selected for each day */

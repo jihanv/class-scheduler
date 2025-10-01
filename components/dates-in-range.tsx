@@ -2,22 +2,8 @@
 
 import * as React from "react"
 import { format } from "date-fns"
-import type { Locale } from "date-fns"
 import { enUS } from "date-fns/locale"
-
-export type DaysInRangeProps = {
-    /** Inclusive list of dates to render */
-    days: Date[]
-    /** Optional heading text */
-    title?: string
-    /** Control the date and weekday formats */
-    dateFormat?: string       // default: "yyyy-MM-dd"
-    weekdayFormat?: string    // default: "EEE"
-    /** Optional locale for deterministic SSR/CSR */
-    locale?: Locale           // default: enUS
-    /** Optional wrapper className */
-    className?: string
-}
+import { DaysInRangeProps } from "@/lib/types"
 
 export function DaysInRange({
     days,
@@ -27,6 +13,7 @@ export function DaysInRange({
     locale = enUS,
     className,
 }: DaysInRangeProps) {
+
     if (!days.length) return null
 
     return (

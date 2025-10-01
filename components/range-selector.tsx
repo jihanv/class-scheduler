@@ -8,17 +8,16 @@ import {
     max as maxDate,
 } from "date-fns"
 import { DateSelector } from "./date-selector"
-import { PeriodSchedule, ScheduleValue } from "./period-schedule"
+import { PeriodSchedule } from "./period-schedule"
 import { ClassMeetingsList } from "./class-meetings-list"
 import { HolidayPicker } from "./holiday-picker"
 import { useRangeStore } from "@/stores/rangeStore"
+import { ScheduleValue } from "@/lib/types"
 
 /** One shadcn-style date picker (popover + button) */
 
 
 export function RangeSelector() {
-    // const [startDate, setStartDate] = React.useState<Date | undefined>()
-    // const [endDate, setEndDate] = React.useState<Date | undefined>()
     const [schedule, setSchedule] = React.useState<ScheduleValue>()
     const [holidays, setHolidays] = React.useState<Date[]>([])
     const { startDate, setStartDate, endDate, setEndDate } = useRangeStore();
@@ -33,11 +32,11 @@ export function RangeSelector() {
     }, [startDate, endDate])
 
     // Exclude holidays
-    // const workingDays = React.useMemo(() => {
-    //     if (holidays.length === 0) return days
-    //     const holidaySet = new Set(holidays.map((h) => startOfDay(h).getTime()))
-    //     return days.filter((d) => !holidaySet.has(startOfDay(d).getTime()))
-    // }, [days, holidays])
+    const workingDays = React.useMemo(() => {
+        if (holidays.length === 0) return days
+        const holidaySet = new Set(holidays.map((h) => startOfDay(h).getTime()))
+        return days.filter((d) => !holidaySet.has(startOfDay(d).getTime()))
+    }, [days, holidays])
 
 
     return (
