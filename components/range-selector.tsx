@@ -18,10 +18,10 @@ import { useRangeStore } from "@/stores/rangeStore"
 
 export function RangeSelector() {
     // const [startDate, setStartDate] = React.useState<Date | undefined>()
-    const [endDate, setEndDate] = React.useState<Date | undefined>()
+    // const [endDate, setEndDate] = React.useState<Date | undefined>()
     const [schedule, setSchedule] = React.useState<ScheduleValue>()
     const [holidays, setHolidays] = React.useState<Date[]>([])
-    const { startDate, setStartDate } = useRangeStore();
+    const { startDate, setStartDate, endDate, setEndDate } = useRangeStore();
 
 
 
