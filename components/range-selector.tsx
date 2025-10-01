@@ -11,15 +11,18 @@ import { DateSelector } from "./date-selector"
 import { PeriodSchedule, ScheduleValue } from "./period-schedule"
 import { ClassMeetingsList } from "./class-meetings-list"
 import { HolidayPicker } from "./holiday-picker"
+import { useRangeStore } from "@/stores/rangeStore"
 
 /** One shadcn-style date picker (popover + button) */
 
 
 export function RangeSelector() {
-    const [startDate, setStartDate] = React.useState<Date | undefined>()
+    // const [startDate, setStartDate] = React.useState<Date | undefined>()
     const [endDate, setEndDate] = React.useState<Date | undefined>()
     const [schedule, setSchedule] = React.useState<ScheduleValue>()
     const [holidays, setHolidays] = React.useState<Date[]>([])
+    const { startDate, setStartDate } = useRangeStore();
+
 
 
     const days = React.useMemo(() => {
@@ -30,11 +33,11 @@ export function RangeSelector() {
     }, [startDate, endDate])
 
     // Exclude holidays
-    const workingDays = React.useMemo(() => {
-        if (holidays.length === 0) return days
-        const holidaySet = new Set(holidays.map((h) => startOfDay(h).getTime()))
-        return days.filter((d) => !holidaySet.has(startOfDay(d).getTime()))
-    }, [days, holidays])
+    // const workingDays = React.useMemo(() => {
+    //     if (holidays.length === 0) return days
+    //     const holidaySet = new Set(holidays.map((h) => startOfDay(h).getTime()))
+    //     return days.filter((d) => !holidaySet.has(startOfDay(d).getTime()))
+    // }, [days, holidays])
 
 
     return (
@@ -54,25 +57,23 @@ export function RangeSelector() {
                         disabledBefore={startDate}
                     />
                 )}
-
-
             </div>
             {/* Show holiday picker once a complete range exists */}
-            {startDate && endDate && (
+            {/* {startDate && endDate && (
                 <HolidayPicker
                     holidays={holidays}
                     setHolidaysAction={setHolidays}
                     minDate={minDate([startDate, endDate])}
                     maxDate={maxDate([startDate, endDate])}
                 />
-            )}
-            {endDate && <PeriodSchedule
+            )} */}
+            {/* {endDate && <PeriodSchedule
                 value={schedule}
                 onChange={setSchedule}
                 periods={7}
-            />}
-            {true && <ClassMeetingsList days={workingDays} schedule={schedule} />
-            }
+            />} */}
+            {/* {true && <ClassMeetingsList days={workingDays} schedule={schedule} />
+            } */}
 
         </div>
     )

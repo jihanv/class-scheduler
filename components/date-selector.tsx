@@ -21,7 +21,7 @@ import { enUS } from "date-fns/locale"
 export type DateSelectorProps = {
     label: string
     date: Date | undefined
-    setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
+    setDateAction: (date: Date | undefined) => void;
     /** If provided, dates strictly before this are disabled */
     disabledBefore?: Date
     /** If provided, dates strictly after this are disabled */
@@ -34,15 +34,7 @@ export function DateSelector({
     setDateAction,
     disabledBefore,
     disabledAfter,
-}: {
-    label: string
-    date: Date | undefined
-    setDateAction: React.Dispatch<React.SetStateAction<Date | undefined>>
-    /** If provided, dates strictly before this are disabled */
-    disabledBefore?: Date
-    /** If provided, dates strictly after this are disabled */
-    disabledAfter?: Date
-}) {
+}: DateSelectorProps) {
     const [open, setOpen] = React.useState(false)
 
     return (
