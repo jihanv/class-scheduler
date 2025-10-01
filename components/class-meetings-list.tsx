@@ -50,7 +50,7 @@ export function ClassMeetingsList({ days, schedule, title = "Classes" }: Props) 
     if (items?.length === 0) return null
 
     return (
-        showClassList && <div className=" flex flex-col justify-center items-center rounded-md border p-3">
+        showClassList && <div className=" flex flex-col justify-center items-center rounded-md border p-3 mt-5">
             <div className="mb-2 text-sm text-muted-foreground">
                 {title} ({items?.length})
             </div>
