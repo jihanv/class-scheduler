@@ -36,7 +36,7 @@ import { enUS } from "date-fns/locale";
 import { Calendar as CalendarIcon, Download, ListChecks, Sparkles } from "lucide-react";
 
 // --- Helpers ---------------------------------------------------------------
-const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
+const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 type WeekdayKey = typeof weekdays[number];
 const weekdayIdx: Record<WeekdayKey, number> = {
     Mon: 1,
@@ -45,7 +45,6 @@ const weekdayIdx: Record<WeekdayKey, number> = {
     Thu: 4,
     Fri: 5,
     Sat: 6,
-    Sun: 0,
 };
 
 function sameDay(a?: Date, b?: Date) {
@@ -98,7 +97,7 @@ function PeriodGrid({
                                             aria-pressed={selected}
                                             onClick={() => toggle(w, p)}
                                         >
-                                            Period {p}
+                                            {p}
                                         </Button>
                                     </td>
                                 );
@@ -167,13 +166,12 @@ export default function ImprovedSchedulerMock() {
     const [endDate, setEndDate] = React.useState<Date | undefined>(startOfDay(addDays(new Date(), 14)));
     const [holidays, setHolidays] = React.useState<Date[]>([]);
     const [schedule, setSchedule] = React.useState<Record<WeekdayKey, number[]>>({
-        Mon: [1, 2],
+        Mon: [],
         Tue: [],
-        Wed: [3],
+        Wed: [],
         Thu: [],
         Fri: [],
         Sat: [],
-        Sun: [],
     });
     const [autoPreview, setAutoPreview] = React.useState(true);
 
@@ -218,8 +216,8 @@ export default function ImprovedSchedulerMock() {
                     <p className="text-muted-foreground">Pick a date range, exclude holidays, choose weekly periods, and generate all meeting dates.</p>
                 </div>
                 <div className="hidden md:flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="gap-2"><Download className="size-4" />Export CSV</Button>
-                    <Button size="sm" className="gap-2"><Sparkles className="size-4" />Add to Calendar</Button>
+                    {/* <Button variant="outline" size="sm" className="gap-2"><Download className="size-4" />Export CSV</Button> */}
+                    {/* <Button size="sm" className="gap-2"><Sparkles className="size-4" />Add to Calendar</Button> */}
                 </div>
             </div>
 
@@ -250,8 +248,8 @@ export default function ImprovedSchedulerMock() {
                             <DateButton label="Start date" date={startDate} setDate={setStartDate} max={endDate} />
                             <DateButton label="End date" date={endDate} setDate={setEndDate} min={startDate} />
                             <div className="col-span-1 md:col-span-2 flex items-center gap-2">
-                                <Checkbox id="preview" checked={autoPreview} onCheckedChange={(v) => setAutoPreview(Boolean(v))} />
-                                <Label htmlFor="preview" className="text-sm text-muted-foreground">Auto-preview results while editing</Label>
+                                {/* <Checkbox id="preview" checked={autoPreview} onCheckedChange={(v) => setAutoPreview(Boolean(v))} /> */}
+                                {/* <Label htmlFor="preview" className="text-sm text-muted-foreground">Auto-preview results while editing</Label> */}
                             </div>
                         </CardContent>
                     </Card>
@@ -318,7 +316,7 @@ export default function ImprovedSchedulerMock() {
                     </Card>
 
                     <div className="flex gap-3">
-                        <Button size="lg" onClick={() => setShowResults(true)} className="gap-2"><ListChecks className="size-4" />Calculate</Button>
+                        {/* <Button size="lg" onClick={() => setShowResults(true)} className="gap-2"><ListChecks className="size-4" />Calculate</Button> */}
                         <Button variant="outline" size="lg" onClick={() => { setHolidays([]); }}>Clear holidays</Button>
                     </div>
                 </div>
@@ -350,10 +348,10 @@ export default function ImprovedSchedulerMock() {
                             )}
 
                             <Separator className="my-4" />
-                            <div className="grid grid-cols-2 gap-2">
+                            {/* <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" className="w-full"><Download className="mr-2 size-4" />CSV</Button>
                                 <Button className="w-full"><Sparkles className="mr-2 size-4" />Calendar</Button>
-                            </div>
+                            </div> */}
                         </CardContent>
                     </Card>
                 </div>
