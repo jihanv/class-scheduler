@@ -11,6 +11,12 @@ export type ScheduleStore = {
   addSections: (section: string) => void;
 
   removeSection: (section: string) => void;
+
+  startDate: Date | undefined;
+  setStartDate: (date: Date | undefined) => void;
+
+  endDate: Date | undefined;
+  setEndDate: (date: Date | undefined) => void;
 };
 
 export const useScheduleStore = create<ScheduleStore>((set, get) => ({
@@ -33,4 +39,15 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
     set((state) => ({
       sections: state.sections.filter((s) => s !== section),
     })),
+  startDate: undefined,
+  setStartDate: (date) => {
+    console.log(date);
+    return set({ startDate: date });
+  },
+
+  endDate: undefined,
+  setEndDate: (date) => {
+    console.log(date);
+    return set({ endDate: date });
+  },
 }));
