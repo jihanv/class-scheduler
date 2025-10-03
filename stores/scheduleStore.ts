@@ -1,4 +1,11 @@
 import { create } from "zustand";
+import {
+  startOfDay,
+  isAfter,
+  isBefore,
+  min as minDate,
+  max as maxDate,
+} from "date-fns";
 
 export type ScheduleStore = {
   courseName: string;
@@ -17,7 +24,15 @@ export type ScheduleStore = {
 
   endDate: Date | undefined;
   setEndDate: (date: Date | undefined) => void;
+
+  showDateSelector: boolean;
+  setShowDateSelector: () => void;
+
+  holidays: Date[];
+  setHolidays: (dates: Date[]) => void;
 };
+
+//    const [holidays, setHolidays] = React.useState<Date[]>([]);
 
 export const useScheduleStore = create<ScheduleStore>((set, get) => ({
   displayName: "",
@@ -50,4 +65,42 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
     console.log(date);
     return set({ endDate: date });
   },
+
+  showDateSelector: false,
+  setShowDateSelector: () =>
+    set((state) => ({
+      showDateSelector: !state.showDateSelector,
+    })),
+
+  holidays: [],
+
+  setHolidays: (dates) =>
+    set((state) => {
+      const { startDate, endDate } = state;
+
+      // 1) normalize
+      const normalized = (dates ?? [])
+        .filter(Boolean)
+        .map((d) => startOfDay(d));
+
+      // 2) ensures that even if something outside the range sneaks in (e.g. a user clicks an invalid date in the calendar, or data comes from an import), it will be filtered out
+      const clamped =
+        startDate && endDate
+          ? normalized.filter((d) => {
+              const minD = startOfDay(minDate([startDate, endDate]));
+              const maxD = startOfDay(maxDate([startDate, endDate]));
+              return !isBefore(d, minD) && !isAfter(d, maxD);
+            })
+          : normalized;
+
+      // 3) Make sure you don’t end up with the same holiday multiple times.
+      const unique = Array.from(
+        new Map(clamped.map((d) => [d.getTime(), d])).values()
+      );
+
+      // 4) sort ascending
+      unique.sort((a, b) => a.getTime() - b.getTime());
+
+      return { holidays: unique };
+    }),
 }));

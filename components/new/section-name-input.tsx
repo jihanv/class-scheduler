@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 import { BADGE_COLORS } from "@/lib/constants";
 
 export default function SectionNameInput() {
-    const { displayName, sections, addSections, removeSection } = useScheduleStore();
+    const { displayName, sections, addSections, removeSection, setShowDateSelector } = useScheduleStore();
     const [newSection, setNewSection] = useState("");
 
     const handleAdd = () => {
@@ -50,6 +50,8 @@ export default function SectionNameInput() {
                             ))}
                         </div>
                     )}
+
+                    {sections.length > 0 && <Button onClick={() => setShowDateSelector()}>Select Dates</Button>}
                 </>
             )}
         </>

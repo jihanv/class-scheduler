@@ -16,11 +16,11 @@ import {
 import { useScheduleStore } from '@/stores/scheduleStore';
 
 export default function DateSelector() {
-    const { startDate, setStartDate, endDate, setEndDate } = useScheduleStore();
+    const { startDate, setStartDate, endDate, setEndDate, showDateSelector } = useScheduleStore();
 
     return (
         <>
-            {<Card>
+            {showDateSelector && <Card>
                 <CardHeader>
                     <CardTitle>Date range</CardTitle>
                     <CardDescription>Choose the start and end dates for your class run.</CardDescription>
