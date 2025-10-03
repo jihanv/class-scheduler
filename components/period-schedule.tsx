@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { DayKey, PeriodScheduleProps, ScheduleValue } from "@/lib/types"
 import { DAY_ORDER } from "@/lib/constants"
 import { useRangeStore } from "@/stores/rangeStore"
+import { useScheduleStore } from "@/stores/scheduleStore"
 
 
 const makeEmpty = (): ScheduleValue => ({
@@ -40,7 +41,7 @@ export function PeriodSchedule({
             } return { ...prev, [day]: Array.from(curr).sort((a, b) => a - b) }
         })
     }
-    const { startDate, setStartDate, endDate, setEndDate } = useRangeStore();
+    const { startDate, setStartDate, endDate, setEndDate } = useScheduleStore();
     return (
         (startDate && endDate && <><div className="rounded-md border w-xl mt-5">
             <table className="w-full border-collapse">

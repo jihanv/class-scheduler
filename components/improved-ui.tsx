@@ -37,7 +37,7 @@ import { Calendar as CalendarIcon, Download, ListChecks, Sparkles } from "lucide
 import { DateButtonProps, WeekdayKey } from "@/lib/types";
 import DateButton from "./improved/date-button";
 import { weekdays } from "@/lib/constants";
-import PeriodGrid from "./improved/period-grid";
+import PeriodGrid from "./new/period-grid";
 
 // --- Helpers ---------------------------------------------------------------
 

@@ -76,3 +76,9 @@ export type PeriodGridProps = {
 };
 
 export type WeekdayKey = (typeof weekdays)[number];
+
+// one day’s periods: period number -> section name (or undefined if unassigned)
+export type DayPeriods = Record<number, string | undefined>;
+
+// whole week: day key -> DayPeriods
+export type ScheduleByDay = Record<WeekdayKey, DayPeriods>;

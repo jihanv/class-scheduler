@@ -6,6 +6,8 @@ import {
   min as minDate,
   max as maxDate,
 } from "date-fns";
+import type { ScheduleByDay, WeekdayKey } from "@/lib/types";
+import { emptySchedule } from "@/lib/constants";
 
 export type ScheduleStore = {
   courseName: string;
@@ -30,6 +32,17 @@ export type ScheduleStore = {
 
   holidays: Date[];
   setHolidays: (dates: Date[]) => void;
+
+  schedule: ScheduleByDay;
+
+  setSectionForPeriod: (
+    day: WeekdayKey,
+    period: number,
+    section: string | null
+  ) => void;
+  clearPeriod: (day: WeekdayKey, period: number) => void;
+  clearDay: (day: WeekdayKey) => void;
+  clearAll: () => void;
 };
 
 //    const [holidays, setHolidays] = React.useState<Date[]>([]);
@@ -103,4 +116,45 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
 
       return { holidays: unique };
     }),
+
+  // new schedule state:
+  schedule: emptySchedule(),
+
+  // set a section for one cell (day+period).
+  // pass section = null to clear it (convenience).
+  setSectionForPeriod: (day, period, section) =>
+    set((state) => {
+      // optional guard: only allow known sections
+      if (section && !state.sections.includes(section)) {
+        return {}; // ignore invalid section
+      }
+
+      const dayMap = { ...(state.schedule[day] ?? {}) };
+      if (section === null) {
+        delete dayMap[period];
+      } else {
+        dayMap[period] = section;
+      }
+
+      return {
+        schedule: {
+          ...state.schedule,
+          [day]: dayMap,
+        },
+      };
+    }),
+
+  clearPeriod: (day, period) =>
+    set((state) => {
+      const dayMap = { ...(state.schedule[day] ?? {}) };
+      delete dayMap[period];
+      return { schedule: { ...state.schedule, [day]: dayMap } };
+    }),
+
+  clearDay: (day) =>
+    set((state) => ({
+      schedule: { ...state.schedule, [day]: {} },
+    })),
+
+  clearAll: () => set({ schedule: emptySchedule() }),
 }));

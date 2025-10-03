@@ -1,4 +1,4 @@
-import { DayKey, WeekdayKey } from "./types";
+import { DayKey, ScheduleByDay, WeekdayKey } from "./types";
 
 export const IDX_TO_KEY = [
   "sun",
@@ -17,10 +17,10 @@ export const DAY_ORDER: { key: DayKey; label: string }[] = [
   { key: "thu", label: "Thu" },
   { key: "fri", label: "Fri" },
   { key: "sat", label: "Sat" },
-  { key: "sun", label: "Sun" },
 ];
 
 export const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
+export const PERIODS = [1, 2, 3, 4, 5, 6, 7];
 
 export const weekdayIdx: Record<WeekdayKey, number> = {
   Mon: 1,
@@ -43,3 +43,14 @@ export const BADGE_COLORS = [
   "bg-lime-100 text-lime-700",
   "bg-orange-100 text-orange-700",
 ];
+
+export type ScheduleMap = Record<WeekdayKey, number[]>;
+
+export const emptySchedule = (): ScheduleByDay => ({
+  Mon: {},
+  Tue: {},
+  Wed: {},
+  Thu: {},
+  Fri: {},
+  Sat: {},
+});
