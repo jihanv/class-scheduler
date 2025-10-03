@@ -26,7 +26,7 @@ export default function ClassNameInput() {
                     setCourseName(e.target.value)
                 }
                 }
-                placeholder="e.g. English"
+                placeholder="e.g. English 101"
             ></Input >
 
             <Button onClick={() => confirm()} disabled={!courseName?.trim()}>Set Course Name</Button>

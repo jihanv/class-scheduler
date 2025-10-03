@@ -13,7 +13,7 @@ export type ScheduleStore = {
   removeSection: (section: string) => void;
 };
 
-export const useScheduleStore = create<ScheduleStore>((set) => ({
+export const useScheduleStore = create<ScheduleStore>((set, get) => ({
   displayName: "",
   setCourseName: (name) => set({ courseName: name }),
 
@@ -21,10 +21,14 @@ export const useScheduleStore = create<ScheduleStore>((set) => ({
   setDisplayName: (name) => set({ displayName: name }),
 
   sections: [],
-  addSections: (section) =>
-    set((state) => ({
-      sections: [...state.sections, section],
-    })),
+  addSections: (section) => {
+    const s = section.trim();
+    const { sections } = get();
+    if (!s || sections.includes(s) || sections.length >= 10) return false;
+    set({ sections: [...sections, s] });
+    return true;
+  },
+
   removeSection: (section) =>
     set((state) => ({
       sections: state.sections.filter((s) => s !== section),

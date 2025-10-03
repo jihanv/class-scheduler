@@ -5,6 +5,7 @@ import { useScheduleStore } from "@/stores/scheduleStore";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { X } from "lucide-react";
+import { BADGE_COLORS } from "@/lib/constants";
 
 export default function SectionNameInput() {
     const { displayName, sections, addSections, removeSection } = useScheduleStore();
@@ -21,7 +22,7 @@ export default function SectionNameInput() {
         <>
             {displayName && (
                 <>
-                    <H1>Add Sections</H1>
+                    <H1>Sections</H1>
                     <Input
                         type="text"
                         className='w-md'
@@ -29,14 +30,14 @@ export default function SectionNameInput() {
                         onChange={(e) => setNewSection(e.target.value)}
                         placeholder="e.g. 6-1"
                     />
-                    <Button onClick={handleAdd}>Add Section</Button>
+                    <Button onClick={handleAdd}>Add a Section</Button>
 
                     {sections.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">
                             {sections.map((s, i) => (
                                 <span
-                                    key={i}
-                                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium"
+                                    key={s}
+                                    className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${BADGE_COLORS[i % BADGE_COLORS.length]}`}
                                 >
                                     {s}
                                     <button
