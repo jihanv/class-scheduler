@@ -1,4 +1,4 @@
-import { DayKey } from "./types";
+import { DayKey, WeekdayKey } from "./types";
 
 export const IDX_TO_KEY = [
   "sun",
@@ -19,3 +19,14 @@ export const DAY_ORDER: { key: DayKey; label: string }[] = [
   { key: "sat", label: "Sat" },
   { key: "sun", label: "Sun" },
 ];
+
+export const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
+
+export const weekdayIdx: Record<WeekdayKey, number> = {
+  Mon: 1,
+  Tue: 2,
+  Wed: 3,
+  Thu: 4,
+  Fri: 5,
+  Sat: 6,
+};

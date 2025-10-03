@@ -9,8 +9,8 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import {
     Popover,
@@ -20,8 +20,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
+// import { Checkbox } from "@/components/ui/checkbox";
+// import { cn } from "@/lib/utils";
 import {
     addDays,
     eachDayOfInterval,
@@ -34,18 +34,13 @@ import {
 } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { Calendar as CalendarIcon, Download, ListChecks, Sparkles } from "lucide-react";
+import { DateButtonProps, WeekdayKey } from "@/lib/types";
+import DateButton from "./improved/date-button";
+import { weekdays } from "@/lib/constants";
+import PeriodGrid from "./improved/period-grid";
 
 // --- Helpers ---------------------------------------------------------------
-const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
-type WeekdayKey = typeof weekdays[number];
-const weekdayIdx: Record<WeekdayKey, number> = {
-    Mon: 1,
-    Tue: 2,
-    Wed: 3,
-    Thu: 4,
-    Fri: 5,
-    Sat: 6,
-};
+
 
 function sameDay(a?: Date, b?: Date) {
     if (!a || !b) return false;
@@ -53,112 +48,9 @@ function sameDay(a?: Date, b?: Date) {
 }
 
 // --- Period selection grid -------------------------------------------------
-function PeriodGrid({
-    periods = 7,
-    value,
-    onChange,
-}: {
-    periods?: number;
-    value: Record<WeekdayKey, number[]>;
-    onChange: (v: Record<WeekdayKey, number[]>) => void;
-}) {
-    const toggle = (day: WeekdayKey, period: number) => {
-        const next = { ...value };
-        const set = new Set(next[day] ?? []);
-        set.has(period) ? set.delete(period) : set.add(period);
-        next[day] = Array.from(set).sort((a, b) => a - b);
-        onChange(next);
-    };
-
-    return (
-        <div className="rounded-2xl border bg-card">
-            <table className="w-full border-collapse">
-                <thead className="sticky top-0 z-10">
-                    <tr>
-                        {weekdays.map((w) => (
-                            <th key={w} className="px-3 py-3 text-left text-sm font-medium">
-                                {w}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {Array.from({ length: periods }, (_, i) => i + 1).map((p) => (
-                        <tr key={p} className="border-t">
-                            {weekdays.map((w) => {
-                                const selected = value[w]?.includes(p);
-                                return (
-                                    <td key={w} className="p-2">
-                                        <Button
-                                            type="button"
-                                            variant={selected ? "default" : "outline"}
-                                            size="sm"
-                                            className={cn("w-full h-9", selected && "shadow")}
-                                            aria-pressed={selected}
-                                            onClick={() => toggle(w, p)}
-                                        >
-                                            {p}
-                                        </Button>
-                                    </td>
-                                );
-                            })}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
-}
 
 // --- Date button/picker ----------------------------------------------------
-function DateButton({
-    label,
-    date,
-    setDate,
-    min,
-    max,
-}: {
-    label: string;
-    date?: Date;
-    setDate: (d?: Date) => void;
-    min?: Date;
-    max?: Date;
-}) {
-    const [open, setOpen] = React.useState(false);
-    return (
-        <div className="flex flex-col gap-2">
-            <Label className="px-1">{label}</Label>
-            <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-64 justify-between font-normal">
-                        <span className="inline-flex items-center gap-2">
-                            <CalendarIcon className="size-4" />
-                            {date ? format(date, "yyyy-MM-dd (EEE)", { locale: enUS }) : "Select date"}
-                        </span>
-                        <span className="text-muted-foreground">▾</span>
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                        mode="single"
-                        locale={enUS}
-                        selected={date}
-                        onSelect={(d) => {
-                            setDate(d);
-                            setOpen(false);
-                        }}
-                        disabled={(d) => {
-                            const sd = startOfDay(d);
-                            if (min && isBefore(sd, startOfDay(min))) return true;
-                            if (max && isAfter(sd, startOfDay(max))) return true;
-                            return false;
-                        }}
-                    />
-                </PopoverContent>
-            </Popover>
-        </div>
-    );
-}
+
 
 // --- Main mockup -----------------------------------------------------------
 export default function ImprovedSchedulerMock() {
@@ -203,9 +95,9 @@ export default function ImprovedSchedulerMock() {
 
     const [showResults, setShowResults] = React.useState(true);
 
-    React.useEffect(() => {
-        if (autoPreview) setShowResults(true);
-    }, [autoPreview, startDate, endDate, holidays, schedule]);
+    // React.useEffect(() => {
+    //     if (autoPreview) setShowResults(true);
+    // }, [autoPreview, startDate, endDate, holidays, schedule]);
 
     return (
         <div className="mx-auto w-full max-w-5xl p-4 md:p-8">
@@ -245,8 +137,8 @@ export default function ImprovedSchedulerMock() {
                             <CardDescription>Choose the start and end dates for your class run.</CardDescription>
                         </CardHeader>
                         <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <DateButton label="Start date" date={startDate} setDate={setStartDate} max={endDate} />
-                            <DateButton label="End date" date={endDate} setDate={setEndDate} min={startDate} />
+                            <DateButton label="Start date" date={startDate} setDateAction={setStartDate} max={endDate} />
+                            <DateButton label="End date" date={endDate} setDateAction={setEndDate} min={startDate} />
                             <div className="col-span-1 md:col-span-2 flex items-center gap-2">
                                 {/* <Checkbox id="preview" checked={autoPreview} onCheckedChange={(v) => setAutoPreview(Boolean(v))} /> */}
                                 {/* <Label htmlFor="preview" className="text-sm text-muted-foreground">Auto-preview results while editing</Label> */}

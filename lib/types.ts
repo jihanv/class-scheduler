@@ -1,5 +1,5 @@
 import { Locale } from "date-fns";
-import { IDX_TO_KEY } from "./constants";
+import { IDX_TO_KEY, weekdays } from "./constants";
 
 export type RangeStore = {
   startDate: Date | undefined;
@@ -60,3 +60,19 @@ export type PeriodScheduleProps = {
   days?: { key: DayKey; label: string }[];
   className?: string;
 };
+
+export type DateButtonProps = {
+  label: string;
+  date?: Date;
+  setDateAction: (d?: Date) => void;
+  min?: Date;
+  max?: Date;
+};
+
+export type PeriodGridProps = {
+  periods?: number;
+  value: Record<WeekdayKey, number[]>;
+  onChange: (v: Record<WeekdayKey, number[]>) => void;
+};
+
+export type WeekdayKey = (typeof weekdays)[number];
