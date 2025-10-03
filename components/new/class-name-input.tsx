@@ -4,6 +4,7 @@
 import { useScheduleStore } from '@/stores/scheduleStore';
 import { Button } from '../ui/button';
 import H1 from '../H1';
+import { Input } from '../ui/input';
 
 export default function ClassNameInput() {
 
@@ -16,17 +17,17 @@ export default function ClassNameInput() {
 
     return (
         <>
-            <H1>Write Class Name</H1>
-            <input
-                className='bg-gray-100 w-lg'
+            <H1>Write Course Name</H1>
+            <Input
+                className='w-md'
                 type="text"
                 value={courseName || ""}
                 onChange={(e) => {
                     setCourseName(e.target.value)
                 }
                 }
-                placeholder="e.g. Communication English"
-            ></input >
+                placeholder="e.g. English"
+            ></Input >
 
             <Button onClick={() => confirm()} disabled={!courseName?.trim()}>Set Course Name</Button>
 

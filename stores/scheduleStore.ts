@@ -9,6 +9,8 @@ export type ScheduleStore = {
 
   sections: string[];
   addSections: (section: string) => void;
+
+  removeSection: (section: string) => void;
 };
 
 export const useScheduleStore = create<ScheduleStore>((set) => ({
@@ -22,5 +24,9 @@ export const useScheduleStore = create<ScheduleStore>((set) => ({
   addSections: (section) =>
     set((state) => ({
       sections: [...state.sections, section],
+    })),
+  removeSection: (section) =>
+    set((state) => ({
+      sections: state.sections.filter((s) => s !== section),
     })),
 }));
