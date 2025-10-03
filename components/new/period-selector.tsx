@@ -16,7 +16,7 @@ export default function PeriodSelector() {
                     <CardDescription>Choose which periods meet on which weekdays.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <ScrollArea className="max-h-[420px] rounded-md">
+                    <ScrollArea className="max-h-[520px] rounded-md">
                         <PeriodGrid />
                     </ScrollArea>
                 </CardContent>
