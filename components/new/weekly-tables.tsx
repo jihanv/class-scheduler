@@ -58,11 +58,13 @@ function dayKeyFromDate(d: Date): "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" 
 
 export default function WeeklyTables() {
     const { startDate, endDate, schedule, sections } = useScheduleStore();
-
+    const weeks = useMemo(
+        () => (startDate && endDate ? buildWeeks(startDate, endDate) : []),
+        [startDate, endDate]
+    );
     // Only show after dates are chosen (matches your existing gating pattern)
     if (!startDate || !endDate) return null;
 
-    const weeks = useMemo(() => buildWeeks(startDate, endDate), [startDate, endDate]);
 
     return (
         <section className="w-full max-w-5xl mx-auto mt-4 space-y-6">
