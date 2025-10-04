@@ -3,6 +3,7 @@ import DateSelector from "@/components/new/date-selector";
 import HolidaySelector from "@/components/new/holiday-selector";
 import PeriodSelector from "@/components/new/period-selector";
 import SectionNameInput from "@/components/new/section-name-input";
+import WeeklyTables from "@/components/new/weekly-tables";
 import { PeriodSchedule } from "@/components/period-schedule";
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
             <DateSelector />
             <HolidaySelector />
             <PeriodSelector />
+            <WeeklyTables />
         </main>
     );
 }

@@ -34,7 +34,7 @@ export default function PeriodGrid() {
 
     return (
         <>
-            <div className="rounded-2xl h-[700]border bg-card">
+            <div className="rounded-2xl border bg-card">
                 <table className="w-[700px] mx-auto table-fixed border-collapse">
                     <thead className="sticky top-0 z-10">
                         <tr>
@@ -72,7 +72,7 @@ export default function PeriodGrid() {
                     </tbody>
                 </table>
             </div>
-            <SectionLegend />
+            {/* <SectionLegend /> */}
         </>
     );
 }
