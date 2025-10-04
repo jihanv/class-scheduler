@@ -21,8 +21,6 @@ export default function PeriodGrid() {
         day: WeekdayKey;
         p: number;
     } | null>(null);
-    const getAssigned = (day: WeekdayKey, p: number) =>
-        schedule[day]?.[p] ?? undefined;
 
     const disabledNoSections = sections.length === 0;
 
