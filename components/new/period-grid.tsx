@@ -1,7 +1,7 @@
 "use client";
 // app/components/periods/period-grid.tsx
 import { BADGE_COLORS, PERIODS, weekdays } from "@/lib/constants";
-import { WeekdayKey } from "@/lib/types";
+import { CellCoord, WeekdayKey } from "@/lib/types";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
@@ -19,10 +19,7 @@ export default function PeriodGrid() {
     const clearPeriod = useScheduleStore((s) => s.clearPeriod);
 
     // remember which cell was clicked
-    const [openCell, setOpenCell] = useState<{
-        day: WeekdayKey;
-        p: number;
-    } | null>(null);
+    const [openCell, setOpenCell] = useState<CellCoord | null>(null);
 
     const disabledNoSections = sections.length === 0;
 
@@ -32,13 +29,6 @@ export default function PeriodGrid() {
     // helper to read what's assigned to a cell
     const assigned = (day: WeekdayKey, period: number) => schedule[day]?.[period];
 
-    const badgeColorFor = (section?: string) => {
-        if (!section) return "bg-secondary text-secondary-foreground";
-        const i = sections.indexOf(section);
-        return i >= 0
-            ? BADGE_COLORS[i % BADGE_COLORS.length]
-            : "bg-secondary text-secondary-foreground";
-    };
 
     const rows = PERIODS;
 
@@ -71,8 +61,8 @@ export default function PeriodGrid() {
                                                 day={day}
                                                 period={p}
                                                 assigned={assignedSection}
-                                                open={openCell?.day === day && openCell?.p === p}
-                                                onOpenChange={(o) => setOpenCell(o ? { day, p } : null)}
+                                                open={openCell?.day === day && openCell?.period === p}
+                                                onOpenChange={(o) => setOpenCell(o ? { day, period: p } : null)}
                                             />
                                         </td>
                                     );

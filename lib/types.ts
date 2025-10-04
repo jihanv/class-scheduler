@@ -82,3 +82,5 @@ export type DayPeriods = Record<number, string | undefined>;
 
 // whole week: day key -> DayPeriods
 export type ScheduleByDay = Record<WeekdayKey, DayPeriods>;
+
+export type CellCoord = { day: WeekdayKey; period: number };
