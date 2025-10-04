@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { BADGE_COLORS } from "@/lib/constants";
 import { WeekdayKey } from "@/lib/types";
 import { useScheduleStore } from "@/stores/scheduleStore";
+import { badgeColorFor } from "@/lib/utils";
 
 type SectionPopoverProps = {
     day: WeekdayKey;
@@ -30,22 +31,14 @@ export default function SectionPopover({
 }: SectionPopoverProps) {
     const { sections, setSectionForPeriod, clearPeriod } = useScheduleStore();
 
-    const badgeColorFor = (section?: string) => {
-        if (!section) return "bg-secondary text-secondary-foreground";
-        const i = sections.indexOf(section);
-        return i >= 0
-            ? BADGE_COLORS[i % BADGE_COLORS.length]
-            : "bg-secondary text-secondary-foreground";
-    };
+
 
     return (
         <Popover open={open} onOpenChange={onOpenChange}>
             <PopoverTrigger asChild>
                 <Button
                     asChild
-                    className={`w-full h-12 rounded-md border px-2 text-sm flex flex-col items-center justify-start gap-0.5 ${assigned
-                        ? badgeColorFor(assigned)
-                        : "bg-background hover:bg-accent text-muted-foreground"
+                    className={`w-full h-12 rounded-md border px-2 text-sm flex flex-col items-center justify-start gap-0.5 ${badgeColorFor(assigned, sections)
                         }`}
                     aria-label={`Select ${day} period ${period}`}
                 >

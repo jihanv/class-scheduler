@@ -3,6 +3,7 @@
 
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { BADGE_COLORS } from "@/lib/constants";
+import { badgeColorFor } from "@/lib/utils";
 
 export default function SectionLegend() {
     const sections = useScheduleStore((s) => s.sections);
@@ -15,7 +16,7 @@ export default function SectionLegend() {
             {sections.map((s, i) => (
                 <span
                     key={s}
-                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${BADGE_COLORS[i % BADGE_COLORS.length]}`}
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${badgeColorFor(s, sections)}`}
                 >
                     {s}
                 </span>
