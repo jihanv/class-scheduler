@@ -29,6 +29,7 @@ export default function DateButton({
     max,
 }: DateButtonProps) {
     const [open, setOpen] = React.useState(false);
+
     return (
         <div className="flex flex-col gap-2">
             <Label className="px-1">{label}</Label>

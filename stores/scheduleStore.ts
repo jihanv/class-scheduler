@@ -5,6 +5,7 @@ import {
   isBefore,
   min as minDate,
   max as maxDate,
+  addDays,
 } from "date-fns";
 import type { ScheduleByDay, WeekdayKey } from "@/lib/types";
 import { emptySchedule } from "@/lib/constants";
@@ -74,10 +75,21 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
   },
 
   endDate: undefined,
-  setEndDate: (date) => {
-    console.log(date);
-    return set({ endDate: date });
-  },
+  setEndDate: (date) =>
+    set((state) => {
+      if (!date) return { endDate: undefined };
+
+      const { startDate } = state;
+
+      // if there's a startDate, enforce max 183 days
+      if (startDate) {
+        const maxEnd = addDays(startDate, 183);
+        const clamped = isAfter(date, maxEnd) ? maxEnd : date;
+        console.log(clamped);
+        return { endDate: clamped };
+      }
+      return { endDate: date };
+    }),
 
   showDateSelector: false,
   setShowDateSelector: () =>
