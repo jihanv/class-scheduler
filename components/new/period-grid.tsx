@@ -7,6 +7,8 @@ import { useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../ui/command";
 import { Button } from "../ui/button"; // if not already
+import SectionPopover from "./section-popover";
+
 
 import SectionLegend from "./section-legends";
 
@@ -61,71 +63,17 @@ export default function PeriodGrid() {
                             <tr key={p} className="border-t">
                                 {weekdays.map((w) => {
                                     const day = w as WeekdayKey;
-                                    const a = assigned(day, p); // ✅ current assignment (string | undefined)
+                                    const assignedSection = schedule[day]?.[p];
 
                                     return (
-                                        <td key={w} className="p-2">
-                                            <Popover
+                                        <td key={w} className="p-2 align-top">
+                                            <SectionPopover
+                                                day={day}
+                                                period={p}
+                                                assigned={assignedSection}
                                                 open={openCell?.day === day && openCell?.p === p}
                                                 onOpenChange={(o) => setOpenCell(o ? { day, p } : null)}
-                                            >
-                                                <PopoverTrigger asChild>
-                                                    {/* Use Button with asChild to avoid button-in-button */}
-                                                    <Button
-                                                        asChild
-                                                        className={`w-full h-12 rounded-md border px-2 text-sm flex flex-col items-center justify-start gap-0.5 ${a ? badgeColorFor(a) : "bg-background hover:bg-accent text-muted-foreground"
-                                                            }`}
-                                                        aria-label={`Select ${day} period ${p}`}
-                                                    >
-                                                        <div
-                                                            onClick={() => {
-                                                                setOpenCell({ day, p });
-                                                                setTempSelection(a ?? "");
-                                                            }}
-                                                        >
-                                                            <span className="font-medium leading-none">{p}</span>
-                                                            <span className={`text-xs leading-none ${a ? "" : "invisible"}`}>
-                                                                {a || "placeholder"}
-                                                            </span>
-                                                        </div>
-                                                    </Button>
-                                                </PopoverTrigger>
-
-                                                <PopoverContent className="p-0 w-56" align="start">
-                                                    <Command>
-                                                        <CommandList>
-                                                            <CommandEmpty>No sections. Add some first.</CommandEmpty>
-
-                                                            <CommandGroup heading="Sections">
-                                                                {sections.map((s) => (
-                                                                    <CommandItem
-                                                                        key={s}
-                                                                        value={s}
-                                                                        onSelect={() => {
-                                                                            setSectionForPeriod(day, p, s);
-                                                                            setOpenCell(null);
-                                                                        }}
-                                                                    >
-                                                                        {s}
-                                                                    </CommandItem>
-                                                                ))}
-                                                            </CommandGroup>
-
-                                                            <CommandGroup>
-                                                                <CommandItem
-                                                                    value="__clear"
-                                                                    onSelect={() => {
-                                                                        clearPeriod(day, p);
-                                                                        setOpenCell(null);
-                                                                    }}
-                                                                >
-                                                                    Clear
-                                                                </CommandItem>
-                                                            </CommandGroup>
-                                                        </CommandList>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
+                                            />
                                         </td>
                                     );
                                 })}
