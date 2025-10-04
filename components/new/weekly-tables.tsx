@@ -3,7 +3,7 @@
 import React, { useMemo } from "react";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { PERIODS } from "@/lib/constants";
-
+import { badgeColorFor } from "@/lib/utils";
 
 /**
  * Utility: get Monday of the week for a given date
@@ -57,7 +57,7 @@ function dayKeyFromDate(d: Date): "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" 
 }
 
 export default function WeeklyTables() {
-    const { startDate, endDate, schedule } = useScheduleStore();
+    const { startDate, endDate, schedule, sections } = useScheduleStore();
 
     // Only show after dates are chosen (matches your existing gating pattern)
     if (!startDate || !endDate) return null;
@@ -99,20 +99,30 @@ export default function WeeklyTables() {
 
                                         {week.days.map((d, i) => {
                                             const key = dayKeyFromDate(d);            // "Mon" | "Tue" | ... | "Sat"
-                                            const assigned = schedule[key]?.[p];       // read from store, e.g., "AB"
+                                            const assigned = schedule[key]?.[p];       // e.g., "AB"
+
+                                            // If there's a section, compute its badge classes (bg/text)
+                                            const colorClasses = assigned
+                                                ? badgeColorFor(assigned, sections)      // returns something like "bg-... text-...":contentReference[oaicite:4]{index=4}
+                                                : "";
 
                                             return (
                                                 <td key={i} className="align-top px-3 py-2 border-b">
-                                                    <div className="text-xs leading-tight">
-                                                        <div className="font-medium">{p}</div>
-                                                        <div className={`text-sm ${assigned ? "font-semibold text-foreground" : "text-muted-foreground"}`}>
-                                                            {assigned ?? "—"}
+                                                    <div className={`rounded-md p-2 ${colorClasses || "bg-background"}`}>
+                                                        <div className="text-xs leading-tight">
+                                                            <div className="font-medium">{p}</div>
+                                                            <div className={`text-sm ${assigned ? "font-semibold" : "text-muted-foreground"}`}>
+                                                                {assigned ?? "—"}
+                                                            </div>
+                                                            <div className={`text-xs ${assigned ? "opacity-80" : "text-muted-foreground"}`}>
+                                                                Class —
+                                                            </div>
                                                         </div>
-                                                        <div className="text-muted-foreground">Class —</div>
                                                     </div>
                                                 </td>
                                             );
                                         })}
+
                                     </tr>
 
                                 ))}
