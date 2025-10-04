@@ -68,27 +68,45 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
     set((state) => ({
       sections: state.sections.filter((s) => s !== section),
     })),
+
   startDate: undefined,
-  setStartDate: (date) => {
-    console.log(date);
-    return set({ startDate: date });
-  },
+
+  setStartDate: (date) =>
+    set((state) => {
+      if (!date) return { startDate: undefined };
+      const sd = startOfDay(date);
+
+      let nextEnd = state.endDate ? startOfDay(state.endDate) : undefined;
+
+      // keep end within [start, start + 183]
+      if (nextEnd) {
+        const maxEnd = addDays(sd, 183);
+        if (isBefore(nextEnd, sd)) nextEnd = sd;
+        if (isAfter(nextEnd, maxEnd)) nextEnd = maxEnd;
+      }
+
+      return { startDate: sd, endDate: nextEnd };
+    }),
 
   endDate: undefined,
   setEndDate: (date) =>
     set((state) => {
       if (!date) return { endDate: undefined };
+      const ed = startOfDay(date);
+      const sd = state.startDate ? startOfDay(state.startDate) : undefined;
 
-      const { startDate } = state;
-
-      // if there's a startDate, enforce max 183 days
-      if (startDate) {
-        const maxEnd = addDays(startDate, 183);
-        const clamped = isAfter(date, maxEnd) ? maxEnd : date;
-        console.log(clamped);
-        return { endDate: clamped };
+      if (!sd) {
+        // no startDate set yet — just store normalized endDate
+        return { endDate: ed };
       }
-      return { endDate: date };
+
+      // clamp to [sd, sd + 183]
+      const maxEnd = addDays(sd, 183);
+      let clamped = ed;
+      if (isBefore(clamped, sd)) clamped = sd;
+      if (isAfter(clamped, maxEnd)) clamped = maxEnd;
+
+      return { endDate: clamped };
     }),
 
   showDateSelector: false,
