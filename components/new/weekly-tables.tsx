@@ -2,6 +2,8 @@
 
 import React, { useMemo } from "react";
 import { useScheduleStore } from "@/stores/scheduleStore";
+import { PERIODS } from "@/lib/constants";
+
 
 /**
  * Utility: get Monday of the week for a given date
@@ -79,15 +81,24 @@ export default function WeeklyTables() {
                             </thead>
 
                             <tbody>
-                                {/* Next step we’ll add one row per period and fill cells */}
-                                <tr>
-                                    <td className="sticky left-0 z-10 bg-card px-3 py-3 text-sm border-b">…</td>
-                                    {week.days.map((_, i) => (
-                                        <td key={i} className="px-3 py-3 border-b text-muted-foreground">
-                                            (cells coming next)
+                                {PERIODS.map((p) => (
+                                    <tr key={p}>
+                                        <td className="sticky left-0 z-10 bg-card align-top px-3 py-2 text-sm font-medium border-b">
+                                            {p}
                                         </td>
-                                    ))}
-                                </tr>
+
+                                        {week.days.map((_, i) => (
+                                            <td key={i} className="align-top px-3 py-2 border-b">
+                                                <div className="text-xs leading-tight">
+                                                    <div className="font-medium">{p}</div>
+                                                    <div className="text-sm text-muted-foreground">—</div>
+                                                    <div className="text-muted-foreground">Class —</div>
+                                                </div>
+                                            </td>
+                                        ))}
+                                    </tr>
+
+                                ))}
                             </tbody>
                         </table>
                     </div>
