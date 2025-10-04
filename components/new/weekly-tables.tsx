@@ -46,8 +46,18 @@ function buildWeeks(start: Date, end: Date) {
     return weeks;
 }
 
+function dayKeyFromDate(d: Date): "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" {
+    // JS: 0=Sun, 1=Mon, ... 6=Sat
+    const day = d.getDay();
+    const KEYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
+    // If it's Sunday (0), we’ll never render it because our weeks are Mon–Sat,
+    // but just in case, fall back to Monday.
+    if (day === 0) return "Mon";
+    return KEYS[day - 1];
+}
+
 export default function WeeklyTables() {
-    const { startDate, endDate } = useScheduleStore();
+    const { startDate, endDate, schedule } = useScheduleStore();
 
     // Only show after dates are chosen (matches your existing gating pattern)
     if (!startDate || !endDate) return null;
@@ -87,15 +97,22 @@ export default function WeeklyTables() {
                                             {p}
                                         </td>
 
-                                        {week.days.map((_, i) => (
-                                            <td key={i} className="align-top px-3 py-2 border-b">
-                                                <div className="text-xs leading-tight">
-                                                    <div className="font-medium">{p}</div>
-                                                    <div className="text-sm text-muted-foreground">—</div>
-                                                    <div className="text-muted-foreground">Class —</div>
-                                                </div>
-                                            </td>
-                                        ))}
+                                        {week.days.map((d, i) => {
+                                            const key = dayKeyFromDate(d);            // "Mon" | "Tue" | ... | "Sat"
+                                            const assigned = schedule[key]?.[p];       // read from store, e.g., "AB"
+
+                                            return (
+                                                <td key={i} className="align-top px-3 py-2 border-b">
+                                                    <div className="text-xs leading-tight">
+                                                        <div className="font-medium">{p}</div>
+                                                        <div className={`text-sm ${assigned ? "font-semibold text-foreground" : "text-muted-foreground"}`}>
+                                                            {assigned ?? "—"}
+                                                        </div>
+                                                        <div className="text-muted-foreground">Class —</div>
+                                                    </div>
+                                                </td>
+                                            );
+                                        })}
                                     </tr>
 
                                 ))}
