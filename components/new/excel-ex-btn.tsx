@@ -1,25 +1,38 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/components/ui/button"; // adjust if your path differs
-import * as XLSX from "xlsx";
-
+import { Button } from "@/components/ui/button";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 export default function ExportExcelButton() {
-    const handleExport = () => {
-        // 1) Build a worksheet (for now, just a single cell demo)
-        const wsData = [
-            ["Weekly Timetables (Demo)"],
-            [""],
-            ["This is a test file. Next step will add real timetables."],
-        ];
-        const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const handleExport = async () => {
+        // 1) New workbook + sheet
+        const wb = new ExcelJS.Workbook();
+        const ws = wb.addWorksheet("Schedule");
+        ws.getColumn(1).width = 28;
+        ws.getColumn(1).alignment = { wrapText: true };
 
-        // 2) Build a workbook and append the sheet
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Schedule");
 
-        // 3) Trigger download
-        XLSX.writeFile(wb, "schedule.xlsx");
+        // 2) Put some demo text
+        ws.getCell("A1").value = "Weekly Timetables (Demo)";
+        ws.getCell("A3").value = "Colored cell below:";
+
+        // 3) Color a cell to prove styling works
+        const c = ws.getCell("A5");
+        c.value = "AB (Example)";
+        c.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFFDE68A" }, // light yellow (ARGB: AARRGGBB)
+        };
+        c.font = { color: { argb: "FF713F12" }, bold: true }; // darker text
+
+        // 4) Download
+        const buf = await wb.xlsx.writeBuffer();
+        const blob = new Blob([buf], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(blob, "schedule.xlsx");
     };
 
     return (
