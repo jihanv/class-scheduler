@@ -25,10 +25,15 @@ export default function InformationDisplay() {
                         ))}
                     </ul>
                 </div>
-                {/* <div className='p-4'>
-                    <H1>Dates:</H1>
-                </div> */}
+                <footer className="mt-10 py-4 text-xs text-muted-foreground border-t border-muted">
+                    © Jihan V. {new Date().getFullYear()}
+                    <br />Class Scheduler
+
+                    Beta Version
+                </footer>
+
             </div>
+
         </>
     )
 }
