@@ -1,14 +1,12 @@
-
-
-"use client"
-import { useScheduleStore } from '@/stores/scheduleStore';
-import { Button } from '../ui/button';
-import H1 from '../H1';
-import { Input } from '../ui/input';
+"use client";
+import { useScheduleStore } from "@/stores/scheduleStore";
+import { Button } from "../ui/button";
+import H1 from "../H1";
+import { Input } from "../ui/input";
 
 export default function ClassNameInput() {
-
-    const { courseName, setCourseName, displayName, setDisplayName } = useScheduleStore();
+    const { courseName, setCourseName, displayName, setDisplayName } =
+        useScheduleStore();
 
     const confirm = () => {
         const trimmed = (courseName ?? "").trim();
@@ -19,19 +17,18 @@ export default function ClassNameInput() {
         <>
             <H1>Write Course Name</H1>
             <Input
-                className='w-md'
+                className="w-full"
                 type="text"
                 value={courseName || ""}
                 onChange={(e) => {
-                    setCourseName(e.target.value)
-                }
-                }
+                    setCourseName(e.target.value);
+                }}
                 placeholder="e.g. English 101"
-            ></Input >
+            ></Input>
 
-            <Button onClick={() => confirm()} disabled={!courseName?.trim()}>Set Course Name</Button>
-
-            {displayName && <H1>{displayName}</H1>}
+            <Button onClick={() => confirm()} disabled={!courseName?.trim()}>
+                Set Course Name
+            </Button>
         </>
-    )
+    );
 }

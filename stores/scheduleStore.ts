@@ -31,6 +31,9 @@ export type ScheduleStore = {
   showDateSelector: boolean;
   setShowDateSelector: () => void;
 
+  showHolidaySelector: boolean;
+  setShowHolidaySelector: () => void;
+
   holidays: Date[];
   setHolidays: (dates: Date[]) => void;
 
@@ -45,8 +48,6 @@ export type ScheduleStore = {
   clearDay: (day: WeekdayKey) => void;
   clearAll: () => void;
 };
-
-//    const [holidays, setHolidays] = React.useState<Date[]>([]);
 
 export const useScheduleStore = create<ScheduleStore>((set, get) => ({
   displayName: "",
@@ -187,4 +188,10 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
     })),
 
   clearAll: () => set({ schedule: emptySchedule() }),
+
+  showHolidaySelector: false,
+  setShowHolidaySelector: () =>
+    set((state) => ({
+      showHolidaySelector: !state.showHolidaySelector,
+    })),
 }));

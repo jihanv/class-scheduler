@@ -35,7 +35,7 @@ export default function PeriodGrid() {
     return (
         <>
             <div className="rounded-2xl border bg-card">
-                <table className="w-[700px] mx-auto table-fixed border-collapse">
+                <table className=" mx-auto table-fixed border-collapse">
                     <thead className="sticky top-0 z-10">
                         <tr>
                             {weekdays.map((w) => (

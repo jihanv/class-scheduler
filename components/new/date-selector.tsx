@@ -14,9 +14,10 @@ import {
     max as maxDate,
 } from "date-fns";
 import { useScheduleStore } from '@/stores/scheduleStore';
+import { Button } from '../ui/button';
 
 export default function DateSelector() {
-    const { startDate, setStartDate, endDate, setEndDate, showDateSelector } = useScheduleStore();
+    const { startDate, setStartDate, endDate, setEndDate, showDateSelector, setShowHolidaySelector } = useScheduleStore();
     const maxEnd = startDate ? startOfDay(addDays(startDate, 183)) : undefined;
 
     return (
@@ -33,6 +34,8 @@ export default function DateSelector() {
                     </div>
                 </CardContent>
             </Card>}
+
+            {endDate && startDate && <Button className='w-50' onClick={() => setShowHolidaySelector()}>Pick Holidays</Button>}
         </>
 
     )

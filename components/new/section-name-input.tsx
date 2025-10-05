@@ -22,10 +22,10 @@ export default function SectionNameInput() {
         <>
             {displayName && (
                 <>
-                    <H1>Sections</H1>
+                    <H1>Write the Sections for <span className="text-blue-500 ">{displayName}</span></H1>
                     <Input
                         type="text"
-                        className='w-md'
+                        className='w-full'
                         value={newSection}
                         onChange={(e) => setNewSection(e.target.value)}
                         placeholder="e.g. 6-1"

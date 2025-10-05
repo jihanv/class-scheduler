@@ -165,7 +165,7 @@ export default function ExportExcelButton() {
                 // Period label (col A)
                 const periodCell = r.getCell(1);
                 periodCell.value = p;
-                periodCell.alignment = { vertical: "top", horizontal: "left" };
+                periodCell.alignment = ALIGN_CENTER_MULTI;
 
                 // Day cells (B..G)
                 days.forEach((d, i) => {
