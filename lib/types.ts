@@ -1,5 +1,6 @@
 import { Locale } from "date-fns";
 import { IDX_TO_KEY, weekdays } from "./constants";
+import { Alignment } from "exceljs";
 
 export type RangeStore = {
   startDate: Date | undefined;
@@ -86,3 +87,15 @@ export type ScheduleByDay = Record<WeekdayKey, DayPeriods>;
 export type CellCoord = { day: WeekdayKey; period: number };
 
 export type Slot = { date: Date; period: number; section: string };
+
+export const ALIGN_CENTER_MULTI: Readonly<Partial<Alignment>> = {
+  vertical: "middle",
+  horizontal: "center",
+  wrapText: true,
+} as const;
+
+export const ALIGN_CENTER_ONE: Readonly<Partial<Alignment>> = {
+  vertical: "middle",
+  horizontal: "center",
+  wrapText: false,
+} as const;

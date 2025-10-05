@@ -6,7 +6,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { EXCEL_BADGE_PALETTE, HOLIDAY_FILL, HOLIDAY_FONT, PERIODS, ROW_HEIGHT_4_LINES } from "@/lib/constants";
-import { Slot } from "@/lib/types";
+import { ALIGN_CENTER_MULTI, ALIGN_CENTER_ONE, Slot } from "@/lib/types";
 
 
 // ----- helpers -----
@@ -174,32 +174,31 @@ export default function ExportExcelButton() {
                     // Outside selected range → blank
                     if (d < startDate || d > endDate) {
                         cell.value = "";
-                        cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                        cell.alignment = ALIGN_CENTER_MULTI
                         return;
                     }
 
-                    // NEW: Holiday → muted, labeled, no badge colors
+                    // Holiday (you chose one-line earlier like `${p} — Holiday`)
                     if (isHoliday(d, holidays)) {
-                        cell.value = `${p}\nHoliday`;
-                        cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                        cell.value = `${p} — Holiday`;              // if you kept multi-line, still fine
+                        cell.alignment = ALIGN_CENTER_ONE;          // or ALIGN_CENTER_MULTI if multi-line
                         cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: HOLIDAY_FILL } };
                         cell.font = { color: { argb: HOLIDAY_FONT } };
-                        return; // IMPORTANT: don't continue to section coloring
+                        return;
                     }
 
-                    // Normal day: show section (if any) and color by badge
-                    const key = dayKeyFromDate(d);                 // "Mon".."Sat"
+                    // Normal day with assignment
+                    const key = dayKeyFromDate(d);
                     const section = schedule[key]?.[p] ?? "";
-
                     if (!section) {
                         cell.value = "";
-                        cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                        cell.alignment = ALIGN_CENTER_MULTI;
                         return;
                     }
 
                     const n = meetingCount.get(`${dateKey(d)}|${p}`);  // may be undefined if something’s off
                     cell.value = `Period ${p}\n${section} \nMeeting ${n ?? "—"}`;
-                    cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                    cell.alignment = ALIGN_CENTER_MULTI;
                     // keep your existing color code right after this (fill/font from palette)
 
 
