@@ -55,7 +55,7 @@ export const emptySchedule = (): ScheduleByDay => ({
   Sat: {},
 });
 
-export const ROW_HEIGHT_4_LINES = 64;
+export const ROW_HEIGHT_4_LINES = 50;
 
 export const EXCEL_BADGE_PALETTE: Array<{ fill: string; font: string }> = [
   { fill: "FFFDE68A", font: "FF78350F" }, // amber-200 / amber-900
@@ -67,3 +67,6 @@ export const EXCEL_BADGE_PALETTE: Array<{ fill: string; font: string }> = [
   { fill: "FFFDE68A", font: "FF92400E" }, // amber-200 / amber-800
   { fill: "FFD9F99D", font: "FF365314" }, // lime-200 / lime-900
 ];
+
+export const HOLIDAY_FILL = "FFF3F4F6";
+export const HOLIDAY_FONT = "FF6B7280";

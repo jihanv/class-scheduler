@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { useScheduleStore } from "@/stores/scheduleStore";
-import { EXCEL_BADGE_PALETTE, PERIODS, ROW_HEIGHT_4_LINES } from "@/lib/constants";
+import { EXCEL_BADGE_PALETTE, HOLIDAY_FILL, HOLIDAY_FONT, PERIODS, ROW_HEIGHT_4_LINES } from "@/lib/constants";
 
 
 // ----- helpers -----
@@ -51,8 +51,19 @@ function* weekStartsBetween(start: Date, end: Date) {
 }
 
 
+// Same-day + holiday detectors
+function sameDay(a: Date, b: Date) {
+    return a.getFullYear() === b.getFullYear()
+        && a.getMonth() === b.getMonth()
+        && a.getDate() === b.getDate();
+}
+function isHoliday(d: Date, list: Date[]) {
+    return list?.some((h) => sameDay(h, d));
+}
+
+
 export default function ExportExcelButton() {
-    const { startDate, endDate, schedule, sections } = useScheduleStore();
+    const { startDate, endDate, schedule, sections, holidays } = useScheduleStore();
 
     const handleExport = async () => {
         if (!startDate || !endDate) {
@@ -74,7 +85,6 @@ export default function ExportExcelButton() {
             { header: "Sat", key: "d6", width: 22 },
         ];
 
-        const ROW_HEIGHT_4_LINES = 64;
 
         let row = 1; // running row pointer
 
@@ -82,14 +92,26 @@ export default function ExportExcelButton() {
             // --- Title row ---
             ws.getCell(row, 1).value = "Weekly Timetable (Week of " + headerLabel(weekStart) + ")";
             ws.getRow(row).font = { bold: true };
-            ws.getRow(row).height = 18;
+            ws.getRow(row).height = ROW_HEIGHT_4_LINES / 2;
             row += 2; // leave a blank row for spacing (title on row, blank row next)
 
             // --- Header row: Mon–Sat with dates ---
             const days = [0, 1, 2, 3, 4, 5].map((i) => addDays(weekStart, i)); // Mon..Sat
             ws.getRow(row).values = ["Period", ...days.map((d) => headerLabel(d))];
             ws.getRow(row).font = { bold: true };
-            ws.getRow(row).height = 16;
+            ws.getRow(row).height = ROW_HEIGHT_4_LINES / 2;
+
+            for (let i = 0; i < days.length; i++) {
+                const d = days[i];
+                if (isHoliday(d, holidays)) {
+                    const cell = ws.getRow(row).getCell(i + 2); // B..G
+                    // Add a 2nd line that says "Holiday"
+                    cell.value = headerLabel(d) + " Holiday";
+                    cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
+                    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: HOLIDAY_FILL } };
+                    cell.font = { bold: true, color: { argb: HOLIDAY_FONT } };
+                }
+            }
 
             // Remember header row to add borders later
             const headerRowIndex = row;
@@ -110,15 +132,25 @@ export default function ExportExcelButton() {
                 days.forEach((d, i) => {
                     const cell = r.getCell(i + 2);
 
-                    // Skip if this date sits outside selected range (first/last week spillover)
+                    // Outside selected range → blank
                     if (d < startDate || d > endDate) {
                         cell.value = "";
                         cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
                         return;
                     }
 
+                    // NEW: Holiday → muted, labeled, no badge colors
+                    if (isHoliday(d, holidays)) {
+                        cell.value = `${p}\nHoliday`;
+                        cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: HOLIDAY_FILL } };
+                        cell.font = { color: { argb: HOLIDAY_FONT } };
+                        return; // IMPORTANT: don't continue to section coloring
+                    }
+
+                    // Normal day: show section (if any) and color by badge
                     const key = dayKeyFromDate(d);                 // "Mon".."Sat"
-                    const section = schedule[key]?.[p] ?? "";       // e.g., "AB" or ""
+                    const section = schedule[key]?.[p] ?? "";
 
                     if (!section) {
                         cell.value = "";
@@ -126,24 +158,16 @@ export default function ExportExcelButton() {
                         return;
                     }
 
-                    // Content (still period + section; “Class n” will come next)
                     cell.value = `${p}\n${section}`;
                     cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
 
-                    // Color to match badge slot
                     const colors = excelColorsForSection(section, sections);
                     if (colors) {
-                        cell.fill = {
-                            type: "pattern",
-                            pattern: "solid",
-                            fgColor: { argb: colors.fill },
-                        };
-                        cell.font = {
-                            color: { argb: colors.font },
-                            bold: true,
-                        };
+                        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: colors.fill } };
+                        cell.font = { color: { argb: colors.font }, bold: true };
                     }
                 });
+
 
                 r.commit();
             }
