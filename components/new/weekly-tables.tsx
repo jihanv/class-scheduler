@@ -55,16 +55,26 @@ function dayKeyFromDate(d: Date): "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" 
     if (day === 0) return "Mon";
     return KEYS[day - 1];
 }
+function sameDay(a: Date, b: Date) {
+    return a.getFullYear() === b.getFullYear()
+        && a.getMonth() === b.getMonth()
+        && a.getDate() === b.getDate();
+}
 
+function isHoliday(d: Date, list: Date[]) {
+    return list?.some((h) => sameDay(h, d));
+}
 export default function WeeklyTables() {
-    const { startDate, endDate, schedule, sections } = useScheduleStore();
+    const { startDate, endDate, schedule, sections, holidays } = useScheduleStore();
+
+    // Always call hooks on every render
     const weeks = useMemo(
         () => (startDate && endDate ? buildWeeks(startDate, endDate) : []),
         [startDate, endDate]
     );
-    // Only show after dates are chosen (matches your existing gating pattern)
-    if (!startDate || !endDate) return null;
 
+    // You can still early-return after hooks
+    if (!startDate || !endDate) return null;
 
     return (
         <section className="w-full max-w-5xl mx-auto mt-4 space-y-6">
@@ -80,15 +90,28 @@ export default function WeeklyTables() {
                         <table className="min-w-full table-fixed border-separate border-spacing-0">
                             <thead>
                                 <tr>
-                                    {/* left gutter for 'Period' header; we’ll use it in the next step */}
                                     <th className="sticky left-0 z-10 bg-card text-left text-xs font-medium text-muted-foreground px-3 py-2 border-b">
                                         Period
                                     </th>
-                                    {week.days.map((d, i) => (
-                                        <th key={i} className="text-left text-xs font-medium px-3 py-2 border-b bg-card">
-                                            {formatHeader(d)}
-                                        </th>
-                                    ))}
+                                    {week.days.map((d, i) => {
+                                        const hol = isHoliday(d, holidays);
+                                        return (
+                                            <th
+                                                key={i}
+                                                className={`text-left text-xs font-medium px-3 py-2 border-b ${hol ? "bg-muted/70" : "bg-card"
+                                                    }`}
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <div className="font-semibold tracking-tight">{formatHeader(d)}</div>
+                                                    {hol && (
+                                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-200/80 text-amber-900 border border-amber-300">
+                                                            Holiday
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </th>
+                                        );
+                                    })}
                                 </tr>
                             </thead>
 
@@ -100,33 +123,47 @@ export default function WeeklyTables() {
                                         </td>
 
                                         {week.days.map((d, i) => {
-                                            const key = dayKeyFromDate(d);            // "Mon" | "Tue" | ... | "Sat"
-                                            const assigned = schedule[key]?.[p];       // e.g., "AB"
+                                            const hol = isHoliday(d, holidays);
+                                            const outOfRange = d < startDate! || d > endDate!;
 
-                                            // If there's a section, compute its badge classes (bg/text)
-                                            const colorClasses = assigned
-                                                ? badgeColorFor(assigned, sections)      // returns something like "bg-... text-...":contentReference[oaicite:4]{index=4}
-                                                : "";
+                                            const key = dayKeyFromDate(d);        // "Mon" | "Tue" | ... | "Sat"
+                                            const assigned = schedule[key]?.[p];   // e.g., "AB"
+
+                                            // Only color when NOT a holiday and within range
+                                            const colorClasses =
+                                                !hol && !outOfRange && assigned ? badgeColorFor(assigned, sections) : "";
+
+                                            // Content variations
+                                            const content = hol ? (
+                                                <div className="text-xs leading-tight">
+                                                    <div className="font-medium">{p}</div>
+                                                    <div className="text-muted-foreground">Holiday</div>
+                                                    <div className="text-muted-foreground">Class —</div>
+                                                </div>
+                                            ) : (
+                                                <div className="text-xs leading-tight">
+                                                    <div className="font-medium">{p}</div>
+                                                    <div className={`text-sm ${assigned ? "font-semibold" : "text-muted-foreground"}`}>
+                                                        {assigned ?? "—"}
+                                                    </div>
+                                                    <div className={`text-xs ${assigned ? "opacity-80" : "text-muted-foreground"}`}>
+                                                        Class —
+                                                    </div>
+                                                </div>
+                                            );
 
                                             return (
                                                 <td key={i} className="align-top px-3 py-2 border-b">
-                                                    <div className={`rounded-md p-2 ${colorClasses || "bg-background"}`}>
-                                                        <div className="text-xs leading-tight">
-                                                            <div className="font-medium">{p}</div>
-                                                            <div className={`text-sm ${assigned ? "font-semibold" : "text-muted-foreground"}`}>
-                                                                {assigned ?? "—"}
-                                                            </div>
-                                                            <div className={`text-xs ${assigned ? "opacity-80" : "text-muted-foreground"}`}>
-                                                                Class —
-                                                            </div>
-                                                        </div>
+                                                    <div
+                                                        className={`rounded-md p-2 ${hol || outOfRange ? "bg-muted/40 text-muted-foreground" : colorClasses || "bg-background"
+                                                            }`}
+                                                    >
+                                                        {content}
                                                     </div>
                                                 </td>
                                             );
                                         })}
-
                                     </tr>
-
                                 ))}
                             </tbody>
                         </table>
@@ -136,3 +173,4 @@ export default function WeeklyTables() {
         </section>
     );
 }
+

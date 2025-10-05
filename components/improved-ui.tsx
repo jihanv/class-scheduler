@@ -202,7 +202,7 @@ export default function ImprovedSchedulerMock() {
                         </CardHeader>
                         <CardContent>
                             <ScrollArea className="max-h-[420px] rounded-md">
-                                <PeriodGrid value={schedule} onChange={setSchedule} periods={7} />
+                                {/* <PeriodGrid value={schedule} onChange={setSchedule} periods={7} /> */}
                             </ScrollArea>
                         </CardContent>
                     </Card>
