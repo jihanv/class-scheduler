@@ -64,6 +64,14 @@ function sameDay(a: Date, b: Date) {
 function isHoliday(d: Date, list: Date[]) {
     return list?.some((h) => sameDay(h, d));
 }
+
+function dateKey(d: Date) {
+    // Use local Y-M-D to avoid TZ drift; keeps keys stable
+    const y = d.getFullYear();
+    const m = d.getMonth() + 1;
+    const day = d.getDate();
+    return `${y}-${String(m).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
 export default function WeeklyTables() {
     const { startDate, endDate, schedule, sections, holidays } = useScheduleStore();
 
@@ -72,6 +80,48 @@ export default function WeeklyTables() {
         () => (startDate && endDate ? buildWeeks(startDate, endDate) : []),
         [startDate, endDate]
     );
+
+    const meetingCount = React.useMemo(() => {
+        // Map of "YYYY-MM-DD|<period>" -> class number for that section
+        const map = new Map<string, number>();
+
+        // Running counter per section across the term
+        const perSection = new Map<string, number>();
+
+        // Flatten all valid meeting slots (chronological domain)
+        const slots: { date: Date; period: number; section: string }[] = [];
+
+        for (const wk of weeks) {
+            for (const d of wk.days) {
+                // Skip outside the chosen range
+                if (d < startDate! || d > endDate!) continue;
+                // Skip holidays
+                if (isHoliday(d, holidays)) continue;
+
+                const dayKey = dayKeyFromDate(d); // "Mon" | ... | "Sat"
+                for (const p of PERIODS) {
+                    const section = schedule[dayKey]?.[p];
+                    if (!section) continue;
+                    slots.push({ date: d, period: p, section });
+                }
+            }
+        }
+
+        // Sort strictly by date, then by period (1..N)
+        slots.sort(
+            (a, b) => a.date.getTime() - b.date.getTime() || a.period - b.period
+        );
+
+        // Walk in order, increment per-section counters, and store a lookup for quick render
+        for (const s of slots) {
+            const next = (perSection.get(s.section) ?? 0) + 1;
+            perSection.set(s.section, next);
+            map.set(`${dateKey(s.date)}|${s.period}`, next);
+        }
+
+        return map;
+    }, [weeks, startDate, endDate, holidays, schedule]);
+
 
     // You can still early-return after hooks
     if (!startDate || !endDate) return null;
@@ -125,15 +175,16 @@ export default function WeeklyTables() {
                                         {week.days.map((d, i) => {
                                             const hol = isHoliday(d, holidays);
                                             const outOfRange = d < startDate! || d > endDate!;
-
-                                            const key = dayKeyFromDate(d);        // "Mon" | "Tue" | ... | "Sat"
-                                            const assigned = schedule[key]?.[p];   // e.g., "AB"
+                                            const key = dayKeyFromDate(d);              // "Mon" | ... | "Sat"
+                                            const assigned = schedule[key]?.[p];         // e.g., "AB"
 
                                             // Only color when NOT a holiday and within range
                                             const colorClasses =
                                                 !hol && !outOfRange && assigned ? badgeColorFor(assigned, sections) : "";
 
-                                            // Content variations
+                                            // Pull precomputed class count (if any)
+                                            const classNum = meetingCount.get(`${dateKey(d)}|${p}`);
+
                                             const content = hol ? (
                                                 <div className="text-xs leading-tight">
                                                     <div className="font-medium">{p}</div>
@@ -147,7 +198,7 @@ export default function WeeklyTables() {
                                                         {assigned ?? "—"}
                                                     </div>
                                                     <div className={`text-xs ${assigned ? "opacity-80" : "text-muted-foreground"}`}>
-                                                        Class —
+                                                        {assigned ? `Meeting ${classNum ?? "—"}` : ""}
                                                     </div>
                                                 </div>
                                             );
