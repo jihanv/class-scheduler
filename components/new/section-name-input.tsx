@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import H1 from "../H1";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { Button } from "../ui/button";
@@ -11,9 +11,34 @@ export default function SectionNameInput() {
     const { displayName, sections, addSections, removeSection, setShowDateSelector } = useScheduleStore();
     const [newSection, setNewSection] = useState("");
     const [feedback, setFeedback] = useState<string | null>(null);
+    const [fading, setFading] = useState(false);
+
+
+    useEffect(() => {
+        if (!feedback) return;
+
+        // show immediately
+        setFading(false);
+
+        // start fading near the end (adjust 2400 → taste)
+        const fadeTimer = setTimeout(() => setFading(true), 2400);
+
+        // fully clear after 3s total
+        const clearTimer = setTimeout(() => {
+            setFeedback(null);
+            setFading(false); // reset for next time
+        }, 3000);
+
+        return () => {
+            clearTimeout(fadeTimer);
+            clearTimeout(clearTimer);
+        };
+    }, [feedback]);
 
 
     const handleAdd = () => {
+
+
         const raw = newSection.trim();
         if (!raw) return;
 
@@ -72,18 +97,20 @@ export default function SectionNameInput() {
                         />
 
                         <p className="text-xs text-muted-foreground">
-                            Tip: separate multiple sections with commas. We’ll trim spaces and ignore duplicates.
+                            Tip: separate multiple sections with commas.
                         </p>
 
                         <Button type="submit" disabled={!newSection.trim()}>
                             Add a Section
                         </Button>
 
-                        {feedback && (
-                            <div className="mt-2 text-sm text-muted-foreground" aria-live="polite">
-                                {feedback}
-                            </div>
-                        )}
+                        <div
+                            className={`mt-2 min-h-[1.25rem] text-sm text-muted-foreground transition-opacity duration-500 ${fading ? "opacity-0" : "opacity-100"
+                                } motion-reduce:transition-none motion-reduce:duration-0`}
+                            aria-live="polite"
+                        >
+                            {feedback ?? ""}
+                        </div>
                     </form>
 
                     {sections.length > 0 && (
