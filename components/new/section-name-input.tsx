@@ -10,14 +10,47 @@ import { BADGE_COLORS } from "@/lib/constants";
 export default function SectionNameInput() {
     const { displayName, sections, addSections, removeSection, setShowDateSelector } = useScheduleStore();
     const [newSection, setNewSection] = useState("");
+    const [feedback, setFeedback] = useState<string | null>(null);
+
 
     const handleAdd = () => {
-        if (newSection.trim() !== "") {
-            addSections(newSection.trim());
-            setNewSection(""); // clear input after adding
-        }
-    };
+        const raw = newSection.trim();
+        if (!raw) return;
 
+        const parts = raw
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+
+        const unique = Array.from(new Set(parts));
+
+        // call the store for each section and collect results
+        const results = unique.map((name) => ({
+            name,
+            ok: addSections(name),
+        }));
+
+        const added = results.filter((r) => r.ok).map((r) => r.name);
+        const skipped = results.filter((r) => !r.ok).map((r) => r.name);
+
+        if (added.length && !skipped.length) {
+            setFeedback(
+                `Added ${added.length} section${added.length > 1 ? "s" : ""}: ${added.join(", ")}`
+            );
+        } else if (added.length && skipped.length) {
+            setFeedback(
+                `Added ${added.length}: ${added.join(", ")} · Skipped ${skipped.length} (duplicates or limit): ${skipped.join(", ")}`
+            );
+        } else if (!added.length && skipped.length) {
+            setFeedback(
+                `No new sections added. Skipped ${skipped.length} (duplicates or limit): ${skipped.join(", ")}`
+            );
+        } else {
+            setFeedback(null);
+        }
+
+        setNewSection("");
+    };
     return (
         <>
             {displayName && (
@@ -30,7 +63,16 @@ export default function SectionNameInput() {
                         onChange={(e) => setNewSection(e.target.value)}
                         placeholder="e.g. 6-1"
                     />
+                    <p className="text-xs text-muted-foreground mt-1">
+                        Tip: separate multiple sections with commas.
+                    </p>
                     <Button onClick={handleAdd}>Add a Section</Button>
+
+                    {feedback && (
+                        <div className="mt-2 text-sm text-muted-foreground">
+                            {feedback}
+                        </div>
+                    )}
 
                     {sections.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">

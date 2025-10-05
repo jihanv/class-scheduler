@@ -18,7 +18,7 @@ export type ScheduleStore = {
   setDisplayName: (name: string) => void;
 
   sections: string[];
-  addSections: (section: string) => void;
+  addSections: (section: string) => boolean;
 
   removeSection: (section: string) => void;
 
