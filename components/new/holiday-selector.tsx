@@ -25,7 +25,7 @@ import { useScheduleStore } from "@/stores/scheduleStore";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 export default function HolidaySelector() {
-    const { startDate, endDate, holidays, setHolidays, showHolidaySelector } =
+    const { startDate, endDate, holidays, setHolidays, showHolidaySelector, setShowHolidaySelector } =
         useScheduleStore();
 
     function sameDay(a?: Date, b?: Date) {
@@ -35,6 +35,7 @@ export default function HolidaySelector() {
 
     return (
         <>
+
             {showHolidaySelector && <>
                 <Card>
                     <CardHeader>

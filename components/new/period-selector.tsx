@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { ScrollArea } from "../ui/scroll-area";
 import PeriodGrid from "./period-grid";
 import { useScheduleStore } from "@/stores/scheduleStore";
+import { Button } from "../ui/button";
 
 export default function PeriodSelector() {
-    const { startDate, endDate, holidays, setHolidays } = useScheduleStore();
+    const { startDate, endDate, setShowHolidaySelector } = useScheduleStore();
     return (
         <>
             {startDate && endDate && <Card>
@@ -16,11 +17,12 @@ export default function PeriodSelector() {
                     <CardDescription>Choose which periods meet on which weekdays.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <ScrollArea className="max-h-[520px] rounded-md">
+                    <ScrollArea className="rounded-md">
                         <PeriodGrid />
                     </ScrollArea>
                 </CardContent>
             </Card>}
+            {endDate && startDate && <Button className='w-50' onClick={() => setShowHolidaySelector()}>Pick Holidays</Button>}
         </>
     );
 }

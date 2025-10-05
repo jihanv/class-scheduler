@@ -15,8 +15,7 @@ import SectionLegend from "./section-legends";
 export default function PeriodGrid() {
     const sections = useScheduleStore((s) => s.sections);
     const schedule = useScheduleStore((s) => s.schedule);
-    const setSectionForPeriod = useScheduleStore((s) => s.setSectionForPeriod);
-    const clearPeriod = useScheduleStore((s) => s.clearPeriod);
+    const { setShowHolidaySelector, endDate, startDate } = useScheduleStore()
 
     // remember which cell was clicked
     const [openCell, setOpenCell] = useState<CellCoord | null>(null);
@@ -35,7 +34,7 @@ export default function PeriodGrid() {
     return (
         <>
             <div className="rounded-2xl border bg-card">
-                <table className=" mx-auto table-fixed border-collapse">
+                <table className="w-full mx-auto table-fixed border-collapse">
                     <thead className="sticky top-0 z-10">
                         <tr>
                             {weekdays.map((w) => (
@@ -72,7 +71,7 @@ export default function PeriodGrid() {
                     </tbody>
                 </table>
             </div>
-            {/* <SectionLegend /> */}
+
         </>
     );
 }

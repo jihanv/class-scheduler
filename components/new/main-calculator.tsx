@@ -12,8 +12,8 @@ export default function Calculator() {
             <ClassNameInput />
             <SectionNameInput />
             <DateSelector />
-            <HolidaySelector />
             <PeriodSelector />
+            <HolidaySelector />
             <WeeklyTables />
             <ExportExcelButton />
         </div>

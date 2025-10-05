@@ -35,7 +35,7 @@ export default function DateSelector() {
                 </CardContent>
             </Card>}
 
-            {endDate && startDate && <Button className='w-50' onClick={() => setShowHolidaySelector()}>Pick Holidays</Button>}
+
         </>
 
     )
