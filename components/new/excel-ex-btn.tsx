@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { useScheduleStore } from "@/stores/scheduleStore";
-import { PERIODS, ROW_HEIGHT_4_LINES } from "@/lib/constants";
+import { EXCEL_BADGE_PALETTE, PERIODS, ROW_HEIGHT_4_LINES } from "@/lib/constants";
 
 
 // ----- helpers -----
@@ -35,8 +35,15 @@ function dayKeyFromDate(d: Date): "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" 
     return KEYS[day - 1];
 }
 
+function excelColorsForSection(section: string, sections: string[]) {
+    const i = sections.indexOf(section);
+    if (i < 0) return null;
+    const slot = EXCEL_BADGE_PALETTE[i % EXCEL_BADGE_PALETTE.length];
+    return slot;
+}
+
 export default function ExportExcelButton() {
-    const { startDate, endDate, schedule } = useScheduleStore();
+    const { startDate, endDate, schedule, sections } = useScheduleStore();
 
     const handleExport = async () => {
         if (!startDate || !endDate) {
@@ -97,10 +104,32 @@ export default function ExportExcelButton() {
 
                 const key = dayKeyFromDate(d);           // "Mon".."Sat"
                 const section = schedule[key]?.[p] ?? ""; // e.g., "AB" or ""
-                // For now: period number + section on two lines
-                cell.value = section ? `${p}\n${section}` : "";
+
+                if (!section) {
+                    cell.value = "";
+                    cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                    return;
+                }
+
+                // Value (still period + section for now)
+                cell.value = `${p}\n${section}`;
                 cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+
+                // NEW: color it like the badge
+                const colors = excelColorsForSection(section, sections);
+                if (colors) {
+                    cell.fill = {
+                        type: "pattern",
+                        pattern: "solid",
+                        fgColor: { argb: colors.fill },
+                    };
+                    cell.font = {
+                        color: { argb: colors.font },
+                        bold: true, // matches the emphasis in the UI
+                    };
+                }
             });
+
 
             row.commit();
         }

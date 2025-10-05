@@ -56,3 +56,14 @@ export const emptySchedule = (): ScheduleByDay => ({
 });
 
 export const ROW_HEIGHT_4_LINES = 64;
+
+export const EXCEL_BADGE_PALETTE: Array<{ fill: string; font: string }> = [
+  { fill: "FFFDE68A", font: "FF78350F" }, // amber-200 / amber-900
+  { fill: "FFA7F3D0", font: "FF064E3B" }, // emerald-200 / emerald-900
+  { fill: "FFBFDBFE", font: "FF1E3A8A" }, // blue-200 / blue-900
+  { fill: "FFE9D5FF", font: "FF4C1D95" }, // purple-200 / purple-900
+  { fill: "FFFECACA", font: "FF7F1D1D" }, // red-200 / red-900
+  { fill: "FFD1FAE5", font: "FF065F46" }, // emerald-200-ish / teal-900
+  { fill: "FFFDE68A", font: "FF92400E" }, // amber-200 / amber-800
+  { fill: "FFD9F99D", font: "FF365314" }, // lime-200 / lime-900
+];
