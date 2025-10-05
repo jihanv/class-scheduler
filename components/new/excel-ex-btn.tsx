@@ -42,6 +42,15 @@ function excelColorsForSection(section: string, sections: string[]) {
     return slot;
 }
 
+function* weekStartsBetween(start: Date, end: Date) {
+    let cur = startOfWeekMonday(start);
+    while (cur <= end) {
+        yield new Date(cur);
+        cur = addDays(cur, 7);
+    }
+}
+
+
 export default function ExportExcelButton() {
     const { startDate, endDate, schedule, sections } = useScheduleStore();
 
@@ -51,100 +60,109 @@ export default function ExportExcelButton() {
             return;
         }
 
-        // ----- build one week (the week containing startDate) -----
-        const weekStart = startOfWeekMonday(startDate);
-        const days = [0, 1, 2, 3, 4, 5].map((i) => addDays(weekStart, i)); // Mon..Sat
-
-        // ----- workbook / worksheet -----
         const wb = new ExcelJS.Workbook();
         const ws = wb.addWorksheet("Schedule");
 
-        // Title
-        ws.getCell("A1").value = "Weekly Timetable (Week of " + headerLabel(weekStart) + ")";
-        ws.getRow(1).font = { bold: true };
-        ws.getRow(1).height = 18;
-
-        // Column widths + headers (A..G)
+        // Column widths (A..G) — set once, used for every week block
         ws.columns = [
             { header: "Period", key: "period", width: 10 },
-            { header: headerLabel(days[0]), key: "d1", width: 22 },
-            { header: headerLabel(days[1]), key: "d2", width: 22 },
-            { header: headerLabel(days[2]), key: "d3", width: 22 },
-            { header: headerLabel(days[3]), key: "d4", width: 22 },
-            { header: headerLabel(days[4]), key: "d5", width: 22 },
-            { header: headerLabel(days[5]), key: "d6", width: 22 },
+            { header: "Mon", key: "d1", width: 22 },
+            { header: "Tue", key: "d2", width: 22 },
+            { header: "Wed", key: "d3", width: 22 },
+            { header: "Thu", key: "d4", width: 22 },
+            { header: "Fri", key: "d5", width: 22 },
+            { header: "Sat", key: "d6", width: 22 },
         ];
 
-        // Put the column headers on row 3 (leave row 2 blank for spacing)
-        const headerRow = ws.getRow(3);
-        headerRow.values = ["Period", ...days.map((d) => headerLabel(d))];
-        headerRow.font = { bold: true };
-        headerRow.height = 16;
+        const ROW_HEIGHT_4_LINES = 64;
 
-        // ----- body: one row per period -----
-        let rowIndex = 4;
-        for (const p of PERIODS) {
-            const row = ws.getRow(rowIndex++);
-            row.height = ROW_HEIGHT_4_LINES;
+        let row = 1; // running row pointer
 
-            // Period label (col A)
-            const periodCell = row.getCell(1);
-            periodCell.value = p;
-            periodCell.alignment = { vertical: "top", horizontal: "left" };
+        for (const weekStart of weekStartsBetween(startDate, endDate)) {
+            // --- Title row ---
+            ws.getCell(row, 1).value = "Weekly Timetable (Week of " + headerLabel(weekStart) + ")";
+            ws.getRow(row).font = { bold: true };
+            ws.getRow(row).height = 18;
+            row += 2; // leave a blank row for spacing (title on row, blank row next)
 
-            // Day cells (B..G)
-            days.forEach((d, i) => {
-                const cell = row.getCell(i + 2);
+            // --- Header row: Mon–Sat with dates ---
+            const days = [0, 1, 2, 3, 4, 5].map((i) => addDays(weekStart, i)); // Mon..Sat
+            ws.getRow(row).values = ["Period", ...days.map((d) => headerLabel(d))];
+            ws.getRow(row).font = { bold: true };
+            ws.getRow(row).height = 16;
 
-                // Skip if outside selected date range (first/last week overflow)
-                if (d < startDate || d > endDate) {
-                    cell.value = "";
-                    return;
-                }
+            // Remember header row to add borders later
+            const headerRowIndex = row;
+            row += 1;
 
-                const key = dayKeyFromDate(d);           // "Mon".."Sat"
-                const section = schedule[key]?.[p] ?? ""; // e.g., "AB" or ""
+            // --- Body rows: one row per period ---
+            const periodStartRow = row;
+            for (const p of PERIODS) {
+                const r = ws.getRow(row++);
+                r.height = ROW_HEIGHT_4_LINES;
 
-                if (!section) {
-                    cell.value = "";
+                // Period label (col A)
+                const periodCell = r.getCell(1);
+                periodCell.value = p;
+                periodCell.alignment = { vertical: "top", horizontal: "left" };
+
+                // Day cells (B..G)
+                days.forEach((d, i) => {
+                    const cell = r.getCell(i + 2);
+
+                    // Skip if this date sits outside selected range (first/last week spillover)
+                    if (d < startDate || d > endDate) {
+                        cell.value = "";
+                        cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                        return;
+                    }
+
+                    const key = dayKeyFromDate(d);                 // "Mon".."Sat"
+                    const section = schedule[key]?.[p] ?? "";       // e.g., "AB" or ""
+
+                    if (!section) {
+                        cell.value = "";
+                        cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                        return;
+                    }
+
+                    // Content (still period + section; “Class n” will come next)
+                    cell.value = `${p}\n${section}`;
                     cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
-                    return;
-                }
 
-                // Value (still period + section for now)
-                cell.value = `${p}\n${section}`;
-                cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                    // Color to match badge slot
+                    const colors = excelColorsForSection(section, sections);
+                    if (colors) {
+                        cell.fill = {
+                            type: "pattern",
+                            pattern: "solid",
+                            fgColor: { argb: colors.fill },
+                        };
+                        cell.font = {
+                            color: { argb: colors.font },
+                            bold: true,
+                        };
+                    }
+                });
 
-                // NEW: color it like the badge
-                const colors = excelColorsForSection(section, sections);
-                if (colors) {
-                    cell.fill = {
-                        type: "pattern",
-                        pattern: "solid",
-                        fgColor: { argb: colors.fill },
-                    };
-                    cell.font = {
-                        color: { argb: colors.font },
-                        bold: true, // matches the emphasis in the UI
-                    };
-                }
-            });
-
-
-            row.commit();
-        }
-
-        // Thin borders for readability
-        const lastRow = rowIndex - 1;
-        for (let r = 3; r <= lastRow; r++) {
-            for (let c = 1; c <= 7; c++) {
-                ws.getCell(r, c).border = {
-                    top: { style: "thin" },
-                    bottom: { style: "thin" },
-                    left: { style: "thin" },
-                    right: { style: "thin" },
-                };
+                r.commit();
             }
+            const periodEndRow = row - 1;
+
+            // --- Borders for this week's block (header + body) ---
+            for (let r = headerRowIndex; r <= periodEndRow; r++) {
+                for (let c = 1; c <= 7; c++) {
+                    ws.getCell(r, c).border = {
+                        top: { style: "thin" },
+                        bottom: { style: "thin" },
+                        left: { style: "thin" },
+                        right: { style: "thin" },
+                    };
+                }
+            }
+
+            // --- Spacer row between weeks ---
+            row += 1;
         }
 
         // Download
@@ -160,9 +178,11 @@ export default function ExportExcelButton() {
         URL.revokeObjectURL(url);
     };
 
+
     return (
         <Button onClick={handleExport} variant="default">
-            Export Excel (One Week)
+            Export Excel (All Weeks)
         </Button>
+
     );
 }
