@@ -54,3 +54,5 @@ export const emptySchedule = (): ScheduleByDay => ({
   Fri: {},
   Sat: {},
 });
+
+export const ROW_HEIGHT_4_LINES = 64;
