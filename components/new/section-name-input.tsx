@@ -51,28 +51,40 @@ export default function SectionNameInput() {
 
         setNewSection("");
     };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();             // prevent full page reload
+        if (newSection.trim() === "") return;
+        handleAdd();
+    };
     return (
         <>
             {displayName && (
                 <>
                     <H1>Write the Sections for <span className="text-blue-500 ">{displayName}</span></H1>
-                    <Input
-                        type="text"
-                        className='w-full'
-                        value={newSection}
-                        onChange={(e) => setNewSection(e.target.value)}
-                        placeholder="e.g. 6-1"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                        Tip: separate multiple sections with commas.
-                    </p>
-                    <Button onClick={handleAdd}>Add a Section</Button>
+                    <form onSubmit={handleSubmit} className="space-y-2">
+                        <Input
+                            type="text"
+                            className="w-full"
+                            value={newSection}
+                            onChange={(e) => setNewSection(e.target.value)}
+                            placeholder="e.g. 6-1 or 6-1, 6-2"
+                        />
 
-                    {feedback && (
-                        <div className="mt-2 text-sm text-muted-foreground">
-                            {feedback}
-                        </div>
-                    )}
+                        <p className="text-xs text-muted-foreground">
+                            Tip: separate multiple sections with commas. We’ll trim spaces and ignore duplicates.
+                        </p>
+
+                        <Button type="submit" disabled={!newSection.trim()}>
+                            Add a Section
+                        </Button>
+
+                        {feedback && (
+                            <div className="mt-2 text-sm text-muted-foreground" aria-live="polite">
+                                {feedback}
+                            </div>
+                        )}
+                    </form>
 
                     {sections.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">

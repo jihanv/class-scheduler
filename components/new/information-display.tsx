@@ -12,11 +12,12 @@ export default function InformationDisplay() {
         <>
             <div className='bg-gray-300 h-dvh p-4'>
                 <div className='p-4'>
-                    <H1>Course: {displayName ? displayName : ""}</H1>
+                    <H1>Course:</H1>
+                    <p className='mt-3 text-xl font-bold '> {displayName ? displayName : ""}</p>
                 </div>
                 <div className='p-4'>
                     <H1>Sections:</H1>
-                    <ul className="list-disc list-inside space-y-1">
+                    <ul className="list-disc list-inside space-y-1 mt-3 font-bold">
                         {sections.map((section, index) => (
                             <li key={index} className="text-gray-800">
                                 {section}
