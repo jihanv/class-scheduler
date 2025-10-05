@@ -6,6 +6,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { EXCEL_BADGE_PALETTE, HOLIDAY_FILL, HOLIDAY_FONT, PERIODS, ROW_HEIGHT_4_LINES } from "@/lib/constants";
+import { Slot } from "@/lib/types";
 
 
 // ----- helpers -----
@@ -61,6 +62,13 @@ function isHoliday(d: Date, list: Date[]) {
     return list?.some((h) => sameDay(h, d));
 }
 
+function dateKey(d: Date) {
+    // local YYYY-MM-DD (stable, avoids TZ drift)
+    const y = d.getFullYear();
+    const m = d.getMonth() + 1;
+    const day = d.getDate();
+    return `${y}-${String(m).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
 
 export default function ExportExcelButton() {
     const { startDate, endDate, schedule, sections, holidays } = useScheduleStore();
@@ -70,6 +78,37 @@ export default function ExportExcelButton() {
             alert("Pick a start and end date first.");
             return;
         }
+
+        // Build chronological list of actual meetings (in range, non-holiday, assigned)
+        const slots: Slot[] = [];
+
+        for (const weekStart of weekStartsBetween(startDate, endDate)) {
+            const days = [0, 1, 2, 3, 4, 5].map((i) => addDays(weekStart, i)); // Mon..Sat
+            for (const d of days) {
+                if (d < startDate || d > endDate) continue;      // out-of-range day
+                if (isHoliday(d, holidays)) continue;            // holiday day
+                const key = dayKeyFromDate(d);                   // "Mon".."Sat"
+                for (const p of PERIODS) {
+                    const section = schedule[key]?.[p];
+                    if (!section) continue;                        // empty slot
+                    slots.push({ date: d, period: p, section });
+                }
+            }
+        }
+
+        // Sort by date, then by period (strict chronological order)
+        slots.sort((a, b) => a.date.getTime() - b.date.getTime() || a.period - b.period);
+
+        // Walk once to assign running "Class n" per section
+        const meetingCount = new Map<string, number>();      // key: `${YYYY-MM-DD}|${period}` → n
+        const perSection = new Map<string, number>();        // section → running n
+
+        for (const s of slots) {
+            const n = (perSection.get(s.section) ?? 0) + 1;
+            perSection.set(s.section, n);
+            meetingCount.set(`${dateKey(s.date)}|${s.period}`, n);
+        }
+
 
         const wb = new ExcelJS.Workbook();
         const ws = wb.addWorksheet("Schedule");
@@ -158,8 +197,11 @@ export default function ExportExcelButton() {
                         return;
                     }
 
-                    cell.value = `${p}\n${section}`;
+                    const n = meetingCount.get(`${dateKey(d)}|${p}`);  // may be undefined if something’s off
+                    cell.value = `Period ${p}\n${section} \nMeeting ${n ?? "—"}`;
                     cell.alignment = { vertical: "top", horizontal: "left", wrapText: true };
+                    // keep your existing color code right after this (fill/font from palette)
+
 
                     const colors = excelColorsForSection(section, sections);
                     if (colors) {

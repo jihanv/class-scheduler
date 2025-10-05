@@ -84,3 +84,5 @@ export type DayPeriods = Record<number, string | undefined>;
 export type ScheduleByDay = Record<WeekdayKey, DayPeriods>;
 
 export type CellCoord = { day: WeekdayKey; period: number };
+
+export type Slot = { date: Date; period: number; section: string };
