@@ -1,5 +1,6 @@
 import InformationDisplay from "@/components/new/information-display";
 import Calculator from "@/components/new/main-calculator";
+import MeetingList from "@/components/new/meeting-list";
 
 export default function Home() {
   return (
@@ -7,8 +8,11 @@ export default function Home() {
       <div className="flex-[1] sticky top-0 h-screen overflow-auto">
         <InformationDisplay />
       </div>
-      <div className="flex-[3]">
+      <div className="flex-[2]">
         <Calculator />
+      </div>
+      <div className="flex-[0.5] top-0 h-screen overflow-auto">
+        <MeetingList />
       </div>
     </main>
   );
