@@ -43,7 +43,7 @@ export default function SectionNameInput() {
         if (!raw) return;
 
         const parts = raw
-            .split(",")
+            .split(/[,、]/)
             .map((s) => s.trim())
             .filter(Boolean);
 
