@@ -42,7 +42,14 @@ export default function HolidaySelector() {
         if (!a || !b) return false;
         return a.toDateString() === b.toDateString();
     }
+    const [country, setCountry] = React.useState<"US" | "JP" | "CA">("US");
 
+    function addNationalHolidaysStub() {
+        // Step 1: no-op placeholder.
+        // We'll implement fetching/deriving the holiday dates in Step 2.
+        // Keeping this empty ensures today's change can't break anything.
+        console.log("Add national holidays for", country);
+    }
     return (
         <>
 
@@ -72,6 +79,16 @@ export default function HolidaySelector() {
                                         const day = startOfDay(d);
                                         return isBefore(day, sd) || isAfter(day, ed);
                                     }}
+
+                                    showOutsideDays={false}
+
+                                    classNames={{
+                                        // the container that holds all month calendars
+                                        months: "flex flex-wrap justify-between gap-y-8 gap-x-8",
+
+                                        // each month: full width on small screens, half (minus the gap) on md+
+                                        month: `flex flex-col max-md:basis-full md:basis-[calc(50%-1rem)] md:shrink-0 md:grow-0 gap-4 border border-border rounded-lg p-4 shadow-sm bg-background`,
+                                    }}
                                 />
                             </div>
                         ) : (
@@ -79,7 +96,29 @@ export default function HolidaySelector() {
                                 Pick start and end dates first to select holidays.
                             </p>
                         )}
+                        {/* Country selector + Add button */}
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
+                            <label htmlFor="country" className="text-sm text-muted-foreground">
+                                Country
+                            </label>
+                            <select
+                                id="country"
+                                className="h-9 rounded-md border bg-background px-2 text-sm"
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value as "US" | "JP" | "CA")}
+                            >
+                                <option value="US">United States</option>
+                                <option value="JP">Japan</option>
+                                <option value="CA">Canada</option>
+                            </select>
 
+                            <Button
+                                onClick={addNationalHolidaysStub}
+                                disabled={!startDate || !endDate}
+                            >
+                                Add national holidays
+                            </Button>
+                        </div>
                         <div className="mt-4 flex items-center gap-2">
                             <Button variant="secondary" onClick={() => setHolidays([])}>
                                 Clear All
