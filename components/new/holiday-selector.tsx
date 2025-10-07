@@ -8,7 +8,6 @@ import {
     CardHeader,
     CardTitle,
 } from "../ui/card";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { Badge } from "../ui/badge";
@@ -20,9 +19,7 @@ import {
     min as minDate,
     max as maxDate,
 } from "date-fns";
-import { enUS } from "date-fns/locale";
 import { useScheduleStore } from "@/stores/scheduleStore";
-import { Calendar as CalendarIcon } from "lucide-react";
 
 function startOfMonth(d: Date) {
     return new Date(d.getFullYear(), d.getMonth(), 1);
@@ -43,12 +40,56 @@ export default function HolidaySelector() {
         return a.toDateString() === b.toDateString();
     }
     const [country, setCountry] = React.useState<"US" | "JP" | "CA">("US");
+    const [loadingHolidays, setLoadingHolidays] = React.useState(false);
 
     function addNationalHolidaysStub() {
         // Step 1: no-op placeholder.
         // We'll implement fetching/deriving the holiday dates in Step 2.
         // Keeping this empty ensures today's change can't break anything.
         console.log("Add national holidays for", country);
+    }
+
+    function ymdToLocalDate(ymd: string) {
+        // Convert "YYYY-MM-DD" to a Date at local midnight (avoids TZ drift)
+        const [y, m, d] = ymd.split("-").map(Number);
+        return startOfDay(new Date(y, (m ?? 1) - 1, d ?? 1));
+    }
+
+    async function addNationalHolidays() {
+        if (!startDate || !endDate) return;
+        setLoadingHolidays(true);
+        try {
+            const sd = startOfDay(minDate([startDate, endDate]));
+            const ed = startOfDay(maxDate([startDate, endDate]));
+
+            // All years spanned by the range (inclusive)
+            const years = new Set<number>();
+            for (let y = sd.getFullYear(); y <= ed.getFullYear(); y++) years.add(y);
+
+            // fetch each year via our API route
+            const results = await Promise.all(
+                Array.from(years).map(async (year) => {
+                    const res = await fetch(`/api/holidays?country=${country}&year=${year}`);
+                    if (!res.ok) return [];
+                    const data: { holidays: { date: string; name: string; country: string }[] } = await res.json();
+                    return data.holidays ?? [];
+                })
+            );
+
+            // Flatten, convert to Date, and clamp to [sd..ed]
+            const fetchedDates = results
+                .flat()
+                .map((h) => ymdToLocalDate(h.date))
+                .filter((d) => !isBefore(d, sd) && !isAfter(d, ed));
+
+            // Merge with existing holidays; your store will unique + sort on setHolidays
+            const merged = [...holidays, ...fetchedDates];
+            setHolidays(merged);
+        } catch (e) {
+            console.error("Failed adding national holidays", e);
+        } finally {
+            setLoadingHolidays(false);
+        }
     }
     return (
         <>
@@ -62,6 +103,27 @@ export default function HolidaySelector() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
+                        {/* Country selector + Add button */}
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
+                            <label htmlFor="country" className="text-sm text-muted-foreground">
+                                Country
+                            </label>
+                            <select
+                                id="country"
+                                className="h-9 rounded-md border bg-background px-2 text-sm"
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value as "US" | "JP" | "CA")}
+                            >
+                                <option value="US">United States</option>
+                                <option value="JP">Japan</option>
+                                <option value="CA">Canada</option>
+                            </select>
+
+                            <Button onClick={addNationalHolidays} disabled={!startDate || !endDate || loadingHolidays}>
+                                {loadingHolidays ? "Adding…" : "Add national holidays"}
+                            </Button>
+                        </div>
+
                         {startDate && endDate ? (
                             <div className="overflow-x-auto">
                                 <Calendar
@@ -96,29 +158,7 @@ export default function HolidaySelector() {
                                 Pick start and end dates first to select holidays.
                             </p>
                         )}
-                        {/* Country selector + Add button */}
-                        <div className="mt-4 flex flex-wrap items-center gap-2">
-                            <label htmlFor="country" className="text-sm text-muted-foreground">
-                                Country
-                            </label>
-                            <select
-                                id="country"
-                                className="h-9 rounded-md border bg-background px-2 text-sm"
-                                value={country}
-                                onChange={(e) => setCountry(e.target.value as "US" | "JP" | "CA")}
-                            >
-                                <option value="US">United States</option>
-                                <option value="JP">Japan</option>
-                                <option value="CA">Canada</option>
-                            </select>
 
-                            <Button
-                                onClick={addNationalHolidaysStub}
-                                disabled={!startDate || !endDate}
-                            >
-                                Add national holidays
-                            </Button>
-                        </div>
                         <div className="mt-4 flex items-center gap-2">
                             <Button variant="secondary" onClick={() => setHolidays([])}>
                                 Clear All
