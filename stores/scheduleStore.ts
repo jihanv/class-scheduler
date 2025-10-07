@@ -50,9 +50,22 @@ export type ScheduleStore = {
 
   showWeeklyPreview: boolean;
   setShowWeeklyPreview: (value: boolean) => void;
+
+  // in ScheduleStore type
+  pendingHolidays: Date[];
+  setPendingHolidays: (dates: Date[]) => void;
+  commitPendingHolidays: () => void;
 };
 
 export const useScheduleStore = create<ScheduleStore>((set, get) => ({
+  pendingHolidays: [],
+  setPendingHolidays: (dates) => set({ pendingHolidays: dates }),
+
+  commitPendingHolidays: () => {
+    const { pendingHolidays, setHolidays } = get();
+    // reuse your existing normalization/dedupe/clamp in setHolidays
+    setHolidays(pendingHolidays);
+  },
   showWeeklyPreview: false,
   setShowWeeklyPreview: (value) => set({ showWeeklyPreview: value }),
   displayName: "",

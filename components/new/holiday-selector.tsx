@@ -36,13 +36,13 @@ function monthsBetweenInclusive(a: Date, b: Date) {
 
 
 export default function HolidaySelector() {
-    const { startDate, endDate, holidays, setHolidays, showHolidaySelector, setShowHolidaySelector } =
+    const { startDate, endDate, holidays, setHolidays, showHolidaySelector, pendingHolidays, setPendingHolidays, } =
         useScheduleStore();
 
-    function sameDay(a?: Date, b?: Date) {
-        if (!a || !b) return false;
-        return a.toDateString() === b.toDateString();
-    }
+    // function sameDay(a?: Date, b?: Date) {
+    //     if (!a || !b) return false;
+    //     return a.toDateString() === b.toDateString();
+    // }
     const [country, setCountry] = React.useState<"US" | "JP" | "CA">("US");
     const [loadingHolidays, setLoadingHolidays] = React.useState(false);
 
@@ -62,10 +62,9 @@ export default function HolidaySelector() {
         return startOfDay(new Date(y, (m ?? 1) - 1, d ?? 1));
     }
 
-    const [pendingHolidays, setPendingHolidays] = React.useState<Date[]>([]);
     React.useEffect(() => {
         if (showHolidaySelector) setPendingHolidays(holidays ?? []);
-    }, [showHolidaySelector, holidays]);
+    }, [showHolidaySelector, holidays, setPendingHolidays]);
 
     async function addNationalHolidays() {
         if (!startDate || !endDate) return;
