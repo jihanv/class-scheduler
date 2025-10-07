@@ -47,9 +47,14 @@ export type ScheduleStore = {
   clearPeriod: (day: WeekdayKey, period: number) => void;
   clearDay: (day: WeekdayKey) => void;
   clearAll: () => void;
+
+  showWeeklyPreview: boolean;
+  setShowWeeklyPreview: (value: boolean) => void;
 };
 
 export const useScheduleStore = create<ScheduleStore>((set, get) => ({
+  showWeeklyPreview: false,
+  setShowWeeklyPreview: (value) => set({ showWeeklyPreview: value }),
   displayName: "",
   setCourseName: (name) => set({ courseName: name }),
 

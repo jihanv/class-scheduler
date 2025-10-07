@@ -14,7 +14,6 @@ export default function Calculator() {
             <DateSelector />
             <PeriodSelector />
             <HolidaySelector />
-            <WeeklyTables />
             <ExportExcelButton />
         </div>
     );

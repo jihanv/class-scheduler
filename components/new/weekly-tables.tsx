@@ -74,6 +74,7 @@ function dateKey(d: Date) {
 }
 export default function WeeklyTables() {
     const { startDate, endDate, schedule, sections, holidays } = useScheduleStore();
+    const showWeeklyPreview = useScheduleStore(s => s.showWeeklyPreview);
 
     // Always call hooks on every render
     const weeks = useMemo(
@@ -124,6 +125,8 @@ export default function WeeklyTables() {
 
 
     // You can still early-return after hooks
+    if (!showWeeklyPreview) return null;
+
     if (!startDate || !endDate) return null;
 
     return (

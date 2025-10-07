@@ -20,6 +20,8 @@ import {
     max as maxDate,
 } from "date-fns";
 import { useScheduleStore } from "@/stores/scheduleStore";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import WeeklyTables from "./weekly-tables";
 
 function startOfMonth(d: Date) {
     return new Date(d.getFullYear(), d.getMonth(), 1);
@@ -31,6 +33,8 @@ function monthsBetweenInclusive(a: Date, b: Date) {
     return y * 12 + m + 1; // inclusive count
 }
 
+
+
 export default function HolidaySelector() {
     const { startDate, endDate, holidays, setHolidays, showHolidaySelector, setShowHolidaySelector } =
         useScheduleStore();
@@ -41,6 +45,9 @@ export default function HolidaySelector() {
     }
     const [country, setCountry] = React.useState<"US" | "JP" | "CA">("US");
     const [loadingHolidays, setLoadingHolidays] = React.useState(false);
+
+    const setShowWeeklyPreview = useScheduleStore(s => s.setShowWeeklyPreview);
+
 
     function addNationalHolidaysStub() {
         // Step 1: no-op placeholder.
@@ -177,6 +184,43 @@ export default function HolidaySelector() {
                             >
                                 Set Holidays
                             </Button>
+
+                            <Popover
+                                onOpenChange={(isOpen) => {
+                                    if (isOpen) {
+                                        // 1) Sync local → global so preview is accurate
+                                        setHolidays(pendingHolidays);
+                                        // 2) Turn on the preview
+                                        setShowWeeklyPreview(true);
+                                    } else {
+                                        // Hide preview when closing the popover
+                                        setShowWeeklyPreview(false);
+                                    }
+                                }}
+                            >
+                                <PopoverTrigger asChild>
+                                    <Button variant="default">Show Weekly Schedule</Button>
+                                </PopoverTrigger>
+
+                                <PopoverContent
+                                    align="end"
+                                    className="w-[90vw] max-w-5xl p-0"
+                                >
+                                    {/* Optional header */}
+                                    <div className="flex items-center justify-between border-b px-4 py-2">
+                                        <h3 className="text-sm font-medium">Weekly preview</h3>
+                                        <span className="text-xs text-muted-foreground">
+                                            (reflects current holiday selection)
+                                        </span>
+                                    </div>
+
+                                    {/* Scrollable preview content */}
+                                    <div className="max-h-[70vh] overflow-auto p-4">
+                                        <WeeklyTables />
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+
                         </div>
 
                         {pendingHolidays.length > 0 && (
