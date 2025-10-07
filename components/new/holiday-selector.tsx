@@ -55,6 +55,11 @@ export default function HolidaySelector() {
         return startOfDay(new Date(y, (m ?? 1) - 1, d ?? 1));
     }
 
+    const [pendingHolidays, setPendingHolidays] = React.useState<Date[]>([]);
+    React.useEffect(() => {
+        if (showHolidaySelector) setPendingHolidays(holidays ?? []);
+    }, [showHolidaySelector, holidays]);
+
     async function addNationalHolidays() {
         if (!startDate || !endDate) return;
         setLoadingHolidays(true);
@@ -133,8 +138,8 @@ export default function HolidaySelector() {
                                         startOfMonth(startDate),
                                         startOfMonth(endDate)
                                     )}
-                                    selected={holidays}
-                                    onSelect={(d) => setHolidays(d ?? [])}
+                                    selected={pendingHolidays}
+                                    onSelect={(d) => setPendingHolidays(d ?? [])}
                                     disabled={(d) => {
                                         const sd = startOfDay(minDate([startDate, endDate]));
                                         const ed = startOfDay(maxDate([startDate, endDate]));
@@ -160,21 +165,29 @@ export default function HolidaySelector() {
                         )}
 
                         <div className="mt-4 flex items-center gap-2">
-                            <Button variant="secondary" onClick={() => setHolidays([])}>
+                            <Button variant="secondary" onClick={() => setPendingHolidays([])}>
                                 Clear All
                             </Button>
 
+                            <Button
+                                onClick={() => {
+                                    setHolidays(pendingHolidays);           // single commit to global
+                                    // close
+                                }}
+                            >
+                                Set Holidays
+                            </Button>
                         </div>
 
-                        {holidays.length > 0 && (
+                        {pendingHolidays.length > 0 && (
                             <div className="mt-4 flex flex-wrap gap-2">
-                                {holidays.map((h) => (
+                                {pendingHolidays.map((h) => (
                                     <Badge key={h.toISOString()} variant="secondary" className="gap-2">
                                         {format(h, "MMM d (EEE)")}
                                         <button
                                             className="-mr-1 rounded px-1 text-muted-foreground hover:text-foreground"
                                             onClick={() =>
-                                                setHolidays(holidays.filter((x) => x.toDateString() !== h.toDateString()))
+                                                setPendingHolidays(pendingHolidays.filter(x => x.toDateString() !== h.toDateString()))
                                             }
                                             aria-label="Remove holiday"
                                         >
