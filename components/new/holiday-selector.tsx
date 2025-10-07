@@ -24,6 +24,16 @@ import { enUS } from "date-fns/locale";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { Calendar as CalendarIcon } from "lucide-react";
 
+function startOfMonth(d: Date) {
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+}
+
+function monthsBetweenInclusive(a: Date, b: Date) {
+    const y = b.getFullYear() - a.getFullYear();
+    const m = b.getMonth() - a.getMonth();
+    return y * 12 + m + 1; // inclusive count
+}
+
 export default function HolidaySelector() {
     const { startDate, endDate, holidays, setHolidays, showHolidaySelector, setShowHolidaySelector } =
         useScheduleStore();
@@ -45,53 +55,47 @@ export default function HolidaySelector() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className="w-64 justify-between font-normal"
-                                >
-                                    <span className="inline-flex items-center gap-2">
-                                        <CalendarIcon className="size-4" />
-                                        {holidays.length
-                                            ? `${holidays.length} selected`
-                                            : "Select holidays"}
-                                    </span>
-                                    <span className="text-muted-foreground">▾</span>
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                        {startDate && endDate ? (
+                            <div className="overflow-x-auto">
                                 <Calendar
                                     mode="multiple"
-                                    locale={enUS}
+                                    month={startOfMonth(startDate)}
+                                    numberOfMonths={monthsBetweenInclusive(
+                                        startOfMonth(startDate),
+                                        startOfMonth(endDate)
+                                    )}
                                     selected={holidays}
                                     onSelect={(d) => setHolidays(d ?? [])}
                                     disabled={(d) => {
-                                        if (!startDate || !endDate) return true;
-                                        const sd = startOfDay(d);
-                                        if (isBefore(sd, startOfDay(minDate([startDate, endDate]))))
-                                            return true;
-                                        if (isAfter(sd, startOfDay(maxDate([startDate, endDate]))))
-                                            return true;
-                                        return false;
+                                        const sd = startOfDay(minDate([startDate, endDate]));
+                                        const ed = startOfDay(maxDate([startDate, endDate]));
+                                        const day = startOfDay(d);
+                                        return isBefore(day, sd) || isAfter(day, ed);
                                     }}
                                 />
-                            </PopoverContent>
-                        </Popover>
+                            </div>
+                        ) : (
+                            <p className="text-sm text-muted-foreground">
+                                Pick start and end dates first to select holidays.
+                            </p>
+                        )}
+
+                        <div className="mt-4 flex items-center gap-2">
+                            <Button variant="secondary" onClick={() => setHolidays([])}>
+                                Clear All
+                            </Button>
+
+                        </div>
 
                         {holidays.length > 0 && (
                             <div className="mt-4 flex flex-wrap gap-2">
                                 {holidays.map((h) => (
-                                    <Badge
-                                        key={h.toISOString()}
-                                        variant="secondary"
-                                        className="gap-2"
-                                    >
+                                    <Badge key={h.toISOString()} variant="secondary" className="gap-2">
                                         {format(h, "MMM d (EEE)")}
                                         <button
                                             className="-mr-1 rounded px-1 text-muted-foreground hover:text-foreground"
                                             onClick={() =>
-                                                setHolidays(holidays.filter((x) => !sameDay(x, h)))
+                                                setHolidays(holidays.filter((x) => x.toDateString() !== h.toDateString()))
                                             }
                                             aria-label="Remove holiday"
                                         >
@@ -102,6 +106,7 @@ export default function HolidaySelector() {
                             </div>
                         )}
                     </CardContent>
+
                 </Card>
                 <Button>Set Your Schedule</Button>
             </>}

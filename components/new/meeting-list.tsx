@@ -80,7 +80,7 @@ export default function MeetingList() {
                 </ul>
             )}
 
-            {maxMeetings === 0 ? (
+            {/* {maxMeetings === 0 ? (
                 <p className="text-sm text-muted-foreground">
                     No meetings to list yet. Add sections, pick dates, assign periods, and exclude holidays.
                 </p>
@@ -90,6 +90,11 @@ export default function MeetingList() {
                         <li key={n}>Meeting {n}</li>
                     ))}
                 </ul>
+            )} */}
+            {maxMeetings === 0 && (
+                <p className="text-sm text-muted-foreground">
+                    No meetings to list yet. Add sections, pick dates, assign periods, and exclude holidays.
+                </p>
             )}
         </div>
     );
