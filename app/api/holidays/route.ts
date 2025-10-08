@@ -56,10 +56,9 @@ export async function GET(req: Request) {
     }));
 
     return NextResponse.json({ holidays });
-  } catch (err: any) {
-    return NextResponse.json(
-      { error: err?.message ?? "Unknown error" },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
