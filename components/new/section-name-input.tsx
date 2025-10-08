@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import H1 from "../H1";
+import H1 from "./H1";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";

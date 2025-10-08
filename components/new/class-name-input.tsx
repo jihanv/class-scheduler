@@ -1,7 +1,7 @@
 "use client";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { Button } from "../ui/button";
-import H1 from "../H1";
+import H1 from "./H1";
 import { Input } from "../ui/input";
 
 export default function ClassNameInput() {

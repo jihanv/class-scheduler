@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import H1 from '../H1'
+import H1 from './H1'
 import { useScheduleStore } from '@/stores/scheduleStore'
 
 export default function InformationDisplay() {
