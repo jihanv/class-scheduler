@@ -19,8 +19,8 @@ export default function Calculator() {
             <ClassNameInput />
             <SectionNameInput />
             <DateSelector />
-            <PeriodSelector />
             <HolidaySelector />
+            <PeriodSelector />
             <Button
                 disabled={!displayName?.trim() || !sections || !startDate || !endDate || schedule === emptySchedule()}
                 className="w-full"

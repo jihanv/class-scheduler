@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { PERIODS } from "@/lib/constants";
 import { badgeColorFor } from "@/lib/utils";
+import ExportExcelButton from "./excel-ex-btn";
 
 /**
  * Utility: get Monday of the week for a given date
@@ -130,101 +131,104 @@ export default function WeeklyTables() {
     if (!startDate || !endDate) return null;
 
     return (
-        <section className="w-full max-w-5xl mx-auto mt-4 space-y-6">
-            <h2 className="text-xl font-semibold">Weekly Timetables (Preview)</h2>
+        <>
+            <ExportExcelButton />
+            <section className="w-full max-w-5xl mx-auto mt-4 space-y-6">
+                <h2 className="text-xl font-semibold">Weekly Timetables (Preview)</h2>
 
-            {weeks.map((week, wIdx) => (
-                <div key={wIdx} className="rounded-2xl border bg-card p-4">
-                    <div className="mb-2 text-sm text-muted-foreground">
-                        Week of {formatHeader(week.start)} · Mon–Sat
-                    </div>
+                {weeks.map((week, wIdx) => (
+                    <div key={wIdx} className="rounded-2xl border bg-card p-4">
+                        <div className="mb-2 text-sm text-muted-foreground">
+                            Week of {formatHeader(week.start)} · Mon–Sat
+                        </div>
 
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full table-fixed border-separate border-spacing-0">
-                            <thead>
-                                <tr>
-                                    <th className="sticky left-0 z-10 bg-card text-left text-xs font-medium text-muted-foreground px-3 py-2 border-b">
-                                        Period
-                                    </th>
-                                    {week.days.map((d, i) => {
-                                        const hol = isHoliday(d, holidays);
-                                        return (
-                                            <th
-                                                key={i}
-                                                className={`text-left text-xs font-medium px-3 py-2 border-b ${hol ? "bg-muted/70" : "bg-card"
-                                                    }`}
-                                            >
-                                                <div className="flex items-center gap-2">
-                                                    <div className="font-semibold tracking-tight">{formatHeader(d)}</div>
-                                                    {hol && (
-                                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-200/80 text-amber-900 border border-amber-300">
-                                                            Holiday
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </th>
-                                        );
-                                    })}
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {PERIODS.map((p) => (
-                                    <tr key={p}>
-                                        <td className="sticky left-0 z-10 bg-card align-top px-3 py-2 text-sm font-medium border-b">
-                                            {p}
-                                        </td>
-
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full table-fixed border-separate border-spacing-0">
+                                <thead>
+                                    <tr>
+                                        <th className="sticky left-0 z-10 bg-card text-left text-xs font-medium text-muted-foreground px-3 py-2 border-b">
+                                            Period
+                                        </th>
                                         {week.days.map((d, i) => {
                                             const hol = isHoliday(d, holidays);
-                                            const outOfRange = d < startDate! || d > endDate!;
-                                            const key = dayKeyFromDate(d);              // "Mon" | ... | "Sat"
-                                            const assigned = schedule[key]?.[p];         // e.g., "AB"
-
-                                            // Only color when NOT a holiday and within range
-                                            const colorClasses =
-                                                !hol && !outOfRange && assigned ? badgeColorFor(assigned, sections) : "";
-
-                                            // Pull precomputed class count (if any)
-                                            const classNum = meetingCount.get(`${dateKey(d)}|${p}`);
-
-                                            const content = hol ? (
-                                                <div className="text-xs leading-tight">
-                                                    <div className="font-medium">{p}</div>
-                                                    <div className="text-muted-foreground">Holiday</div>
-                                                    <div className="text-muted-foreground">Class —</div>
-                                                </div>
-                                            ) : (
-                                                <div className="text-xs leading-tight">
-                                                    <div className="font-medium">{p}</div>
-                                                    <div className={`text-sm ${assigned ? "font-semibold" : "text-muted-foreground"}`}>
-                                                        {assigned ?? "—"}
-                                                    </div>
-                                                    <div className={`text-xs ${assigned ? "opacity-80" : "text-muted-foreground"}`}>
-                                                        {assigned ? `Meeting ${classNum ?? "—"}` : ""}
-                                                    </div>
-                                                </div>
-                                            );
-
                                             return (
-                                                <td key={i} className="align-top px-3 py-2 border-b">
-                                                    <div
-                                                        className={`rounded-md p-2 ${hol || outOfRange ? "bg-muted/40 text-muted-foreground" : colorClasses || "bg-background"
-                                                            }`}
-                                                    >
-                                                        {content}
+                                                <th
+                                                    key={i}
+                                                    className={`text-left text-xs font-medium px-3 py-2 border-b ${hol ? "bg-muted/70" : "bg-card"
+                                                        }`}
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="font-semibold tracking-tight">{formatHeader(d)}</div>
+                                                        {hol && (
+                                                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-200/80 text-amber-900 border border-amber-300">
+                                                                Holiday
+                                                            </span>
+                                                        )}
                                                     </div>
-                                                </td>
+                                                </th>
                                             );
                                         })}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+
+                                <tbody>
+                                    {PERIODS.map((p) => (
+                                        <tr key={p}>
+                                            <td className="sticky left-0 z-10 bg-card align-top px-3 py-2 text-sm font-medium border-b">
+                                                {p}
+                                            </td>
+
+                                            {week.days.map((d, i) => {
+                                                const hol = isHoliday(d, holidays);
+                                                const outOfRange = d < startDate! || d > endDate!;
+                                                const key = dayKeyFromDate(d);              // "Mon" | ... | "Sat"
+                                                const assigned = schedule[key]?.[p];         // e.g., "AB"
+
+                                                // Only color when NOT a holiday and within range
+                                                const colorClasses =
+                                                    !hol && !outOfRange && assigned ? badgeColorFor(assigned, sections) : "";
+
+                                                // Pull precomputed class count (if any)
+                                                const classNum = meetingCount.get(`${dateKey(d)}|${p}`);
+
+                                                const content = hol ? (
+                                                    <div className="text-xs leading-tight">
+                                                        <div className="font-medium">{p}</div>
+                                                        <div className="text-muted-foreground">Holiday</div>
+                                                        <div className="text-muted-foreground">Class —</div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-xs leading-tight">
+                                                        <div className="font-medium">{p}</div>
+                                                        <div className={`text-sm ${assigned ? "font-semibold" : "text-muted-foreground"}`}>
+                                                            {assigned ?? "—"}
+                                                        </div>
+                                                        <div className={`text-xs ${assigned ? "opacity-80" : "text-muted-foreground"}`}>
+                                                            {assigned ? `Meeting ${classNum ?? "—"}` : ""}
+                                                        </div>
+                                                    </div>
+                                                );
+
+                                                return (
+                                                    <td key={i} className="align-top px-3 py-2 border-b">
+                                                        <div
+                                                            className={`rounded-md p-2 ${hol || outOfRange ? "bg-muted/40 text-muted-foreground" : colorClasses || "bg-background"
+                                                                }`}
+                                                        >
+                                                            {content}
+                                                        </div>
+                                                    </td>
+                                                );
+                                            })}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            ))}
-        </section>
+                ))}
+            </section>
+        </>
     );
 }
 

@@ -34,6 +34,9 @@ export type ScheduleStore = {
   showHolidaySelector: boolean;
   setShowHolidaySelector: () => void;
 
+  showPeriodSelector: boolean;
+  setShowPeriodSelector: () => void;
+
   holidays: Date[];
   setHolidays: (dates: Date[]) => void;
 
@@ -132,6 +135,12 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
   setShowDateSelector: () =>
     set((state) => ({
       showDateSelector: !state.showDateSelector,
+    })),
+
+  showPeriodSelector: false,
+  setShowPeriodSelector: () =>
+    set((state) => ({
+      showPeriodSelector: !state.showPeriodSelector,
     })),
 
   holidays: [],

@@ -8,10 +8,10 @@ import { useScheduleStore } from "@/stores/scheduleStore";
 import { Button } from "../ui/button";
 
 export default function PeriodSelector() {
-    const { startDate, endDate, schedule, sections, displayName, setShowHolidaySelector } = useScheduleStore();
+    const { startDate, endDate, showPeriodSelector, sections, displayName, setShowHolidaySelector } = useScheduleStore();
     return (
         <>
-            {startDate && endDate && <Card>
+            {showPeriodSelector && <Card>
                 <CardHeader>
                     <CardTitle>Weekly periods</CardTitle>
                     <CardDescription>Choose which periods meet on which weekdays.</CardDescription>
@@ -22,11 +22,7 @@ export default function PeriodSelector() {
                     </ScrollArea>
                 </CardContent>
             </Card>}
-            <Button
-                disabled={!displayName?.trim() || !sections || !startDate || !endDate}
-                className='w-full'
-                onClick={() => setShowHolidaySelector()}
-            > Select Holidays</Button>
+
         </>
     );
 }

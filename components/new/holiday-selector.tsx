@@ -42,8 +42,7 @@ export default function HolidaySelector() {
     const [country, setCountry] = React.useState<"US" | "JP" | "CA">("US");
     const [loadingHolidays, setLoadingHolidays] = React.useState(false);
 
-    const setShowWeeklyPreview = useScheduleStore(s => s.setShowWeeklyPreview);
-    const { displayName, sections, addSections, removeSection, setShowDateSelector } = useScheduleStore();
+    const { displayName, sections, setShowPeriodSelector } = useScheduleStore();
 
 
     function addNationalHolidaysStub() {
@@ -199,7 +198,7 @@ export default function HolidaySelector() {
             </>}
             <Button
                 disabled={!displayName?.trim() || sections.length === 0 || !startDate || !endDate}
-                onClick={() => setShowDateSelector()}>Select Periods</Button>
+                onClick={() => setShowPeriodSelector()}>Select Periods</Button>
         </>
     );
 }
