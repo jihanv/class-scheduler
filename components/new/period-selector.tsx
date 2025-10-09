@@ -8,7 +8,7 @@ import { useScheduleStore } from "@/stores/scheduleStore";
 import { Button } from "../ui/button";
 
 export default function PeriodSelector() {
-    const { startDate, endDate, schedule, sections, displayName, pendingHolidays, setShowHolidaySelector } = useScheduleStore();
+    const { startDate, endDate, schedule, sections, displayName, setShowHolidaySelector } = useScheduleStore();
     return (
         <>
             {startDate && endDate && <Card>
@@ -26,7 +26,7 @@ export default function PeriodSelector() {
                 disabled={!displayName?.trim() || !sections || !startDate || !endDate}
                 className='w-full'
                 onClick={() => setShowHolidaySelector()}
-            >Pick Holidays</Button>
+            > Select Holidays</Button>
         </>
     );
 }

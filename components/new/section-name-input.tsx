@@ -8,11 +8,16 @@ import { X } from "lucide-react";
 import { BADGE_COLORS } from "@/lib/constants";
 
 export default function SectionNameInput() {
-    const { displayName, sections, addSections, removeSection, setShowDateSelector } = useScheduleStore();
+    const {
+        displayName,
+        sections,
+        addSections,
+        removeSection,
+        setShowDateSelector,
+    } = useScheduleStore();
     const [newSection, setNewSection] = useState("");
     const [feedback, setFeedback] = useState<string | null>(null);
     const [fading, setFading] = useState(false);
-
 
     useEffect(() => {
         if (!feedback) return;
@@ -35,10 +40,7 @@ export default function SectionNameInput() {
         };
     }, [feedback]);
 
-
     const handleAdd = () => {
-
-
         const raw = newSection.trim();
         if (!raw) return;
 
@@ -60,15 +62,18 @@ export default function SectionNameInput() {
 
         if (added.length && !skipped.length) {
             setFeedback(
-                `Added ${added.length} section${added.length > 1 ? "s" : ""}: ${added.join(", ")}`
+                `Added ${added.length} section${added.length > 1 ? "s" : ""
+                }: ${added.join(", ")}`
             );
         } else if (added.length && skipped.length) {
             setFeedback(
-                `Added ${added.length}: ${added.join(", ")} · Skipped ${skipped.length} (duplicates or limit): ${skipped.join(", ")}`
+                `Added ${added.length}: ${added.join(", ")} · Skipped ${skipped.length
+                } (duplicates or limit): ${skipped.join(", ")}`
             );
         } else if (!added.length && skipped.length) {
             setFeedback(
-                `No new sections added. Skipped ${skipped.length} (duplicates or limit): ${skipped.join(", ")}`
+                `No new sections added. Skipped ${skipped.length
+                } (duplicates or limit): ${skipped.join(", ")}`
             );
         } else {
             setFeedback(null);
@@ -78,15 +83,20 @@ export default function SectionNameInput() {
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();             // prevent full page reload
+        e.preventDefault(); // prevent full page reload
         if (newSection.trim() === "") return;
         handleAdd();
     };
     return (
         <>
+            {" "}
+
             {displayName && (
                 <>
-                    <H1>Write the Sections for <span className="text-blue-500 ">{displayName}</span></H1>
+                    <H1>
+                        Write the Sections for{" "}
+                        <span className="text-blue-500 ">{displayName}</span>
+                    </H1>
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <Input
                             type="text"
@@ -99,26 +109,16 @@ export default function SectionNameInput() {
                         <p className="text-xs text-muted-foreground">
                             Tip: separate multiple sections with commas.
                         </p>
-
-                        <Button type="submit" disabled={!newSection.trim()}>
-                            Add a Section
-                        </Button>
-
-                        <div
-                            className={`mt-2 min-h-[1.25rem] text-sm text-muted-foreground transition-opacity duration-500 ${fading ? "opacity-0" : "opacity-100"
-                                } motion-reduce:transition-none motion-reduce:duration-0`}
-                            aria-live="polite"
-                        >
-                            {feedback ?? ""}
-                        </div>
                     </form>
 
-                    {sections.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
+                    {/* Badges area */}
+                    <div className="mt-2 min-h-10 max-h-30 overflow-auto">
+                        <div className="flex flex-wrap gap-2">
                             {sections.map((s, i) => (
                                 <span
                                     key={s}
-                                    className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${BADGE_COLORS[i % BADGE_COLORS.length]}`}
+                                    className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${BADGE_COLORS[i % BADGE_COLORS.length]
+                                        }`}
                                 >
                                     {s}
                                     <button
@@ -129,10 +129,26 @@ export default function SectionNameInput() {
                                     </button>
                                 </span>
                             ))}
+                            <div
+                                className={`mt-2 text-sm text-muted-foreground transition-opacity duration-500 ${fading ? "opacity-0" : "opacity-100"
+                                    } motion-reduce:transition-none motion-reduce:duration-0`}
+                                aria-live="polite"
+                            >
+                                {feedback ?? ""}
+                            </div>
                         </div>
-                    )}
+                    </div>
+                    <Button
+                        type="submit" disabled={!newSection.trim() && !displayName?.trim()}>
+                        Add a Sections
+                    </Button>
 
-                    {sections.length > 0 && <Button onClick={() => setShowDateSelector()}>Select Dates</Button>}
+                    <Button
+                        disabled={!displayName?.trim() || sections.length === 0}
+                        onClick={() => setShowDateSelector()}
+                    >
+                        Select Dates
+                    </Button>
                 </>
             )}
         </>

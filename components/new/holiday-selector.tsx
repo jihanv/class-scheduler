@@ -39,14 +39,11 @@ export default function HolidaySelector() {
     const { startDate, endDate, holidays, setHolidays, showHolidaySelector, pendingHolidays, setPendingHolidays, } =
         useScheduleStore();
 
-    // function sameDay(a?: Date, b?: Date) {
-    //     if (!a || !b) return false;
-    //     return a.toDateString() === b.toDateString();
-    // }
     const [country, setCountry] = React.useState<"US" | "JP" | "CA">("US");
     const [loadingHolidays, setLoadingHolidays] = React.useState(false);
 
     const setShowWeeklyPreview = useScheduleStore(s => s.setShowWeeklyPreview);
+    const { displayName, sections, addSections, removeSection, setShowDateSelector } = useScheduleStore();
 
 
     function addNationalHolidaysStub() {
@@ -175,16 +172,6 @@ export default function HolidaySelector() {
                                 Clear All
                             </Button>
 
-                            <Button
-                                onClick={() => {
-                                    setHolidays(pendingHolidays);           // single commit to global
-                                    // close
-                                }}
-                            >
-                                Set Holidays
-                            </Button>
-
-
                         </div>
 
                         {pendingHolidays.length > 0 && (
@@ -210,6 +197,9 @@ export default function HolidaySelector() {
                 </Card>
 
             </>}
+            <Button
+                disabled={!displayName?.trim() || sections.length === 0 || !startDate || !endDate}
+                onClick={() => setShowDateSelector()}>Select Periods</Button>
         </>
     );
 }
