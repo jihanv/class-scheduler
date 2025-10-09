@@ -2,7 +2,6 @@
 "use client";
 
 import { useScheduleStore } from "@/stores/scheduleStore";
-import { BADGE_COLORS } from "@/lib/constants";
 import { badgeColorFor } from "@/lib/utils";
 
 export default function SectionLegend() {

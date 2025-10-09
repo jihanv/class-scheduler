@@ -1,12 +1,9 @@
 "use client";
 // app/components/periods/period-grid.tsx
-import { BADGE_COLORS, PERIODS, weekdays } from "@/lib/constants";
+import { PERIODS, weekdays } from "@/lib/constants";
 import { CellCoord, WeekdayKey } from "@/lib/types";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { useState } from "react";
-import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "../ui/command";
-import { Button } from "../ui/button"; // if not already
 import SectionPopover from "./section-popover";
 
 

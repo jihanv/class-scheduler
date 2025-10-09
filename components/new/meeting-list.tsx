@@ -80,18 +80,6 @@ export default function MeetingList() {
                     })}
                 </ul>
             )}
-
-            {/* {maxMeetings === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                    No meetings to list yet. Add sections, pick dates, assign periods, and exclude holidays.
-                </p>
-            ) : (
-                <ul className="list-disc list-inside space-y-1">
-                    {items.map((n) => (
-                        <li key={n}>Meeting {n}</li>
-                    ))}
-                </ul>
-            )} */}
             {maxMeetings === 0 && (
                 <p className="text-sm text-muted-foreground">
                     No meetings to list yet. Add sections, pick dates, assign periods, and exclude holidays.

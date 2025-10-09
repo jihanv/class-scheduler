@@ -7,15 +7,13 @@ import { useRouter } from "next/navigation";
 
 
 export default function ClassNameInput() {
-    const router = useRouter();
-    const { courseName, setCourseName, displayName, setDisplayName } =
+    const { courseName, setCourseName, setDisplayName } =
         useScheduleStore();
 
     const confirm = () => {
         const trimmed = (courseName ?? "").trim();
         if (trimmed) {
             setDisplayName(trimmed)
-
         };
     };
 

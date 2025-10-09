@@ -5,10 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { ScrollArea } from "../ui/scroll-area";
 import PeriodGrid from "./period-grid";
 import { useScheduleStore } from "@/stores/scheduleStore";
-import { Button } from "../ui/button";
 
 export default function PeriodSelector() {
-    const { startDate, endDate, showPeriodSelector, sections, displayName, setShowHolidaySelector } = useScheduleStore();
+    const { showPeriodSelector } = useScheduleStore();
     return (
         <>
             {showPeriodSelector && <Card>

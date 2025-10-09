@@ -2,16 +2,10 @@
 
 import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
-import DateButton from '../improved/date-button'
+import DateButton from './date-button'
 import {
     addDays,
-    eachDayOfInterval,
-    format,
-    isAfter,
-    isBefore,
     startOfDay,
-    min as minDate,
-    max as maxDate,
 } from "date-fns";
 import { useScheduleStore } from '@/stores/scheduleStore';
 import { Button } from '../ui/button';

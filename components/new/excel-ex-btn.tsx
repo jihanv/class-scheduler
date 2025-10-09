@@ -3,7 +3,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { emptySchedule, EXCEL_BADGE_PALETTE, HOLIDAY_FILL, HOLIDAY_FONT, PERIODS, ROW_HEIGHT_4_LINES } from "@/lib/constants";
 import { ALIGN_CENTER_MULTI, ALIGN_CENTER_ONE, Slot } from "@/lib/types";

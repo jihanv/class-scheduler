@@ -20,8 +20,6 @@ import {
     max as maxDate,
 } from "date-fns";
 import { useScheduleStore } from "@/stores/scheduleStore";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import WeeklyTables from "./weekly-tables";
 
 function startOfMonth(d: Date) {
     return new Date(d.getFullYear(), d.getMonth(), 1);

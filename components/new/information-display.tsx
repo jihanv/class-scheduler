@@ -7,7 +7,7 @@ import MeetingList from './meeting-list'
 export default function InformationDisplay() {
 
 
-    const { displayName, sections, endDate, startDate } = useScheduleStore()
+    const { displayName } = useScheduleStore()
     return (
 
         <>
