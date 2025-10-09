@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import InformationDisplay from "@/components/new/information-display";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-scroll`}
       >
-        {children}
+        <main className="flex flex-row w-full">
+
+          <div className="flex-[0.75] sticky top-0 h-screen overflow-auto">
+            <InformationDisplay />
+          </div>
+          <div className="flex-2 flex-col m-5 gap-5 p-10">{children}</div>
+
+
+        </main>
       </body>
     </html>
   );

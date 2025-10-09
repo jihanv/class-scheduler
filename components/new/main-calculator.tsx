@@ -12,7 +12,7 @@ import { useScheduleStore } from "@/stores/scheduleStore";
 export default function Calculator() {
     const showWeeklyPreview = useScheduleStore(s => s.showWeeklyPreview);
     const setShowWeeklyPreview = useScheduleStore(s => s.setShowWeeklyPreview);
-    const { holidays, setHolidays, commitPendingHolidays } = useScheduleStore();
+    const { commitPendingHolidays } = useScheduleStore();
     return (
         <div className="flex flex-col gap-5 p-10">
             <ClassNameInput />
@@ -43,7 +43,7 @@ export default function Calculator() {
                 </DialogContent>
             </Dialog>
 
-            <ExportExcelButton />
+            {/* <ExportExcelButton /> */}
         </div>
     );
 }

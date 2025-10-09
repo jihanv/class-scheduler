@@ -3,14 +3,20 @@ import { useScheduleStore } from "@/stores/scheduleStore";
 import { Button } from "../ui/button";
 import H1 from "./H1";
 import { Input } from "../ui/input";
+import { useRouter } from "next/navigation";
+
 
 export default function ClassNameInput() {
+    const router = useRouter();
     const { courseName, setCourseName, displayName, setDisplayName } =
         useScheduleStore();
 
     const confirm = () => {
         const trimmed = (courseName ?? "").trim();
-        if (trimmed) setDisplayName(trimmed);
+        if (trimmed) {
+            setDisplayName(trimmed)
+
+        };
     };
 
     return (

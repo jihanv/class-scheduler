@@ -87,7 +87,7 @@ export default function SectionNameInput() {
             {displayName && (
                 <>
                     <H1>Write the Sections for <span className="text-blue-500 ">{displayName}</span></H1>
-                    <form onSubmit={handleSubmit} className="space-y-2">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         <Input
                             type="text"
                             className="w-full"

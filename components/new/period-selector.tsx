@@ -22,7 +22,7 @@ export default function PeriodSelector() {
                     </ScrollArea>
                 </CardContent>
             </Card>}
-            {endDate && startDate && <Button className='w-50' onClick={() => setShowHolidaySelector()}>Pick Holidays</Button>}
+            {endDate && startDate && <Button className='w-full' onClick={() => setShowHolidaySelector()}>Pick Holidays</Button>}
         </>
     );
 }
