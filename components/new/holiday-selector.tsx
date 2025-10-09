@@ -208,7 +208,7 @@ export default function HolidaySelector() {
                     </CardContent>
 
                 </Card>
-                <Button>Set Your Schedule</Button>
+
             </>}
         </>
     );

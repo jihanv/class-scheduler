@@ -16,18 +16,8 @@ export default function InformationDisplay() {
                     <H1 className='text-4xl min-h-[2.5rem]'>{displayName !== "" ? displayName : ""}</H1>
                 </div>
                 <MeetingList />
-                <div className='p-4'>
-                    <H1 className='text-3xl'>Sections:</H1>
-                    {/* <ul className="list-disc list-inside space-y-1 mt-3 font-bold">
-                        {sections.map((section, index) => (
-                            <li key={index} className="text-gray-800">
-                                {section}
-                            </li>
-                        ))}
-                    </ul> */}
 
-                </div>
-                <footer className="mt-10 fixed bottom-0 w-full py-4 text-xs text-muted-foreground border-t border-muted">
+                <footer className="mt-10 fixed bottom-10 py-4 text-xs text-muted-foreground  border-muted">
                     © Jihan V. 2025
                     <br />Class Scheduler
 

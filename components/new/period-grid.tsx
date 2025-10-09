@@ -10,17 +10,13 @@ import { Button } from "../ui/button"; // if not already
 import SectionPopover from "./section-popover";
 
 
-import SectionLegend from "./section-legends";
 
 export default function PeriodGrid() {
-    const sections = useScheduleStore((s) => s.sections);
     const schedule = useScheduleStore((s) => s.schedule);
-    const { setShowHolidaySelector, endDate, startDate } = useScheduleStore()
 
     // remember which cell was clicked
     const [openCell, setOpenCell] = useState<CellCoord | null>(null);
 
-    const disabledNoSections = sections.length === 0;
 
     // just for this step: local selection value (no saving yet)
     const [tempSelection, setTempSelection] = useState<string>("");

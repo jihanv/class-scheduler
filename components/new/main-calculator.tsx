@@ -5,14 +5,15 @@ import HolidaySelector from "@/components/new/holiday-selector";
 import PeriodSelector from "@/components/new/period-selector";
 import SectionNameInput from "@/components/new/section-name-input";
 import WeeklyTables from "@/components/new/weekly-tables";
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./dialogue";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./dialogue";
 import { Button } from "../ui/button";
 import { useScheduleStore } from "@/stores/scheduleStore";
+import { emptySchedule } from "@/lib/constants";
 
 export default function Calculator() {
     const showWeeklyPreview = useScheduleStore(s => s.showWeeklyPreview);
     const setShowWeeklyPreview = useScheduleStore(s => s.setShowWeeklyPreview);
-    const { commitPendingHolidays } = useScheduleStore();
+    const { commitPendingHolidays, displayName, sections, startDate, endDate, schedule } = useScheduleStore();
     return (
         <div className="flex flex-col gap-5 p-10">
             <ClassNameInput />
@@ -21,13 +22,14 @@ export default function Calculator() {
             <PeriodSelector />
             <HolidaySelector />
             <Button
-                className="w-full mb-2"
+                disabled={!displayName?.trim() || !sections || !startDate || !endDate || schedule === emptySchedule()}
+                className="w-full"
                 onClick={() => {
                     commitPendingHolidays();     // ✅ sync local → global
                     setShowWeeklyPreview(true);  // ✅ open preview dialog
                 }}
             >
-                Show Preview
+                Show Schedule
             </Button>
 
             {/* Your dialog controlled by the store */}
@@ -43,7 +45,7 @@ export default function Calculator() {
                 </DialogContent>
             </Dialog>
 
-            {/* <ExportExcelButton /> */}
+            <ExportExcelButton />
         </div>
     );
 }

@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { PERIODS } from "@/lib/constants";
+import H1 from "./H1";
 
 function dayKeyFromDate(d: Date): "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" {
     const day = d.getDay(); // 0=Sun..6=Sat
@@ -59,7 +60,7 @@ export default function MeetingList() {
     return (
         <div className="p-4 bg-gray-300">
             <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-semibold">Meetings</h2>
+                <H1>Lessons</H1>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-muted">
                     Max = {maxMeetings}
                 </span>
@@ -68,7 +69,7 @@ export default function MeetingList() {
             {/* Per-section summary */}
             {/* Per-section summary (one per line) */}
             {sections.length > 0 && (
-                <ul className="mb-3 space-y-1 text-sm text-rose-950 font-bold">
+                <ul className="mb-3 mt-10 space-y-1 text-md font-bold">
                     {sections.map((s) => {
                         const n = perSectionCounts.get(s) ?? 0;
                         return (

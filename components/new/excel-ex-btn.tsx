@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { useScheduleStore } from "@/stores/scheduleStore";
-import { EXCEL_BADGE_PALETTE, HOLIDAY_FILL, HOLIDAY_FONT, PERIODS, ROW_HEIGHT_4_LINES } from "@/lib/constants";
+import { emptySchedule, EXCEL_BADGE_PALETTE, HOLIDAY_FILL, HOLIDAY_FONT, PERIODS, ROW_HEIGHT_4_LINES } from "@/lib/constants";
 import { ALIGN_CENTER_MULTI, ALIGN_CENTER_ONE, Slot } from "@/lib/types";
 
 
@@ -71,9 +71,12 @@ function dateKey(d: Date) {
 }
 
 export default function ExportExcelButton() {
-    const { startDate, endDate, schedule, sections, holidays } = useScheduleStore();
+
+    const { startDate, endDate, schedule, sections, displayName, pendingHolidays } = useScheduleStore();
 
     const handleExport = async () => {
+
+
         if (!startDate || !endDate) {
             alert("Pick a start and end date first.");
             return;
@@ -86,7 +89,7 @@ export default function ExportExcelButton() {
             const days = [0, 1, 2, 3, 4, 5].map((i) => addDays(weekStart, i)); // Mon..Sat
             for (const d of days) {
                 if (d < startDate || d > endDate) continue;      // out-of-range day
-                if (isHoliday(d, holidays)) continue;            // holiday day
+                if (isHoliday(d, pendingHolidays)) continue;            // holiday day
                 const key = dayKeyFromDate(d);                   // "Mon".."Sat"
                 for (const p of PERIODS) {
                     const section = schedule[key]?.[p];
@@ -142,7 +145,7 @@ export default function ExportExcelButton() {
 
             for (let i = 0; i < days.length; i++) {
                 const d = days[i];
-                if (isHoliday(d, holidays)) {
+                if (isHoliday(d, pendingHolidays)) {
                     const cell = ws.getRow(row).getCell(i + 2); // B..G
                     // Add a 2nd line that says "Holiday"
                     cell.value = headerLabel(d) + " Holiday";
@@ -179,7 +182,7 @@ export default function ExportExcelButton() {
                     }
 
                     // Holiday (you chose one-line earlier like `${p} — Holiday`)
-                    if (isHoliday(d, holidays)) {
+                    if (isHoliday(d, pendingHolidays)) {
                         cell.value = `${p} — Holiday`;              // if you kept multi-line, still fine
                         cell.alignment = ALIGN_CENTER_ONE;          // or ALIGN_CENTER_MULTI if multi-line
                         cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: HOLIDAY_FILL } };
@@ -245,7 +248,10 @@ export default function ExportExcelButton() {
 
 
     return (
-        <Button onClick={handleExport} variant="default">
+        <Button disabled={!displayName?.trim() || !sections || !startDate || !endDate || schedule === emptySchedule()} onClick={() => {
+            handleExport()
+        }
+        } variant="default">
             Export Excel (All Weeks)
         </Button>
 
