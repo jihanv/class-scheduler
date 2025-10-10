@@ -34,14 +34,11 @@ function monthsBetweenInclusive(a: Date, b: Date) {
 
 
 export default function HolidaySelector() {
-    const { startDate, endDate, holidays, setHolidays, showHolidaySelector, pendingHolidays, setPendingHolidays, } =
+    const { startDate, endDate, holidays, setHolidays, showHolidaySelector, pendingHolidays, setPendingHolidays, displayName, sections, schedule, setShowHolidaySelector } =
         useScheduleStore();
 
     const [country, setCountry] = React.useState<"US" | "JP" | "CA">("US");
     const [loadingHolidays, setLoadingHolidays] = React.useState(false);
-
-    const { displayName, sections, setShowPeriodSelector } = useScheduleStore();
-
 
     function addNationalHolidaysStub() {
         // Step 1: no-op placeholder.
@@ -98,8 +95,13 @@ export default function HolidaySelector() {
     }
     return (
         <>
+            <Button
+                disabled={!displayName?.trim() || !sections || !startDate || !endDate || !schedule}
+                className='w-full'
+                onClick={() => setShowHolidaySelector()}
+            > Select Holidays</Button>
 
-            {showHolidaySelector && <>
+            {(showHolidaySelector) && (startDate && endDate) && <>
                 <Card>
                     <CardHeader>
                         <CardTitle>Holidays</CardTitle>
@@ -194,9 +196,6 @@ export default function HolidaySelector() {
                 </Card>
 
             </>}
-            <Button
-                disabled={!displayName?.trim() || sections.length === 0 || !startDate || !endDate}
-                onClick={() => setShowPeriodSelector()}>Select Periods</Button>
         </>
     );
 }

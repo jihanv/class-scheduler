@@ -144,15 +144,11 @@ export default function SectionNameInput() {
                 </>
             )}
             <Button
-                type="submit" disabled={!newSection.trim() && !displayName?.trim()}>
+                type="submit" disabled={sections.length === 0 && (!newSection.trim() && !displayName?.trim())}
+                onClick={handleAdd}>
                 Add Sections
             </Button>
-            <Button
-                disabled={!displayName?.trim() || sections.length === 0}
-                onClick={() => setShowDateSelector()}
-            >
-                Select Dates
-            </Button>
+
         </>
     );
 }

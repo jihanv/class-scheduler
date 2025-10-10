@@ -216,7 +216,7 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
 
   clearAll: () => set({ schedule: emptySchedule() }),
 
-  showHolidaySelector: false,
+  showHolidaySelector: true,
   setShowHolidaySelector: () =>
     set((state) => ({
       showHolidaySelector: !state.showHolidaySelector,

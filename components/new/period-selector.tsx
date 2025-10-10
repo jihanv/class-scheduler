@@ -5,11 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { ScrollArea } from "../ui/scroll-area";
 import PeriodGrid from "./period-grid";
 import { useScheduleStore } from "@/stores/scheduleStore";
+import { Button } from "../ui/button";
 
 export default function PeriodSelector() {
-    const { showPeriodSelector } = useScheduleStore();
+    const { showPeriodSelector, setShowPeriodSelector, displayName, sections, startDate, endDate } = useScheduleStore();
     return (
         <>
+            <Button
+                disabled={!displayName?.trim() && sections.length === 0}
+                onClick={() => setShowPeriodSelector()}>Select Periods</Button>
             {showPeriodSelector && <Card>
                 <CardHeader>
                     <CardTitle>Weekly periods</CardTitle>

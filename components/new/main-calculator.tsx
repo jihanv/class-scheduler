@@ -18,9 +18,9 @@ export default function Calculator() {
         <div className="flex flex-col gap-5 p-10">
             <ClassNameInput />
             <SectionNameInput />
+            <PeriodSelector />
             <DateSelector />
             <HolidaySelector />
-            <PeriodSelector />
             <Button
                 disabled={!displayName?.trim() || !sections || !startDate || !endDate || schedule === emptySchedule()}
                 className="w-full"
