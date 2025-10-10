@@ -11,13 +11,20 @@ import { useScheduleStore } from '@/stores/scheduleStore';
 import { Button } from '../ui/button';
 
 export default function DateSelector() {
-    const { startDate, displayName, sections, setStartDate, endDate, setEndDate, showDateSelector, setShowDateSelector, setShowHolidaySelector, schedule } = useScheduleStore();
+    const { startDate, setStartDate, endDate, setEndDate, showDateSelector, setShowDateSelector, schedule } = useScheduleStore();
     const maxEnd = startDate ? startOfDay(addDays(startDate, 183)) : undefined;
+
+    const hasAnyAssigned = React.useMemo(() => {
+        // schedule shape: schedule[day][period] = sectionName | undefined
+        return Object.values(schedule || {}).some(
+            (dayMap) => dayMap && Object.values(dayMap).some((v) => !!v)
+        )
+    }, [schedule])
 
     return (
         <>
             <Button
-                disabled={sections.length === 0}
+                disabled={!hasAnyAssigned}
                 onClick={() => setShowDateSelector()}
             >
                 Select Dates
