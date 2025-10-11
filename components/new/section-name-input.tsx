@@ -13,7 +13,7 @@ export default function SectionNameInput() {
         sections,
         addSections,
         removeSection,
-        setShowDateSelector,
+        uiLanguage
     } = useScheduleStore();
     const [newSection, setNewSection] = useState("");
     const [feedback, setFeedback] = useState<string | null>(null);
@@ -94,8 +94,10 @@ export default function SectionNameInput() {
             {displayName && (
                 <>
                     <H1>
-                        Write the Sections for{" "}
-                        <span className="text-blue-500 ">{displayName}</span>
+
+                        {uiLanguage === "japanese" ? `${displayName} の組を入力してください`
+                            : `Write the Sections for ${displayName}`}
+
                     </H1>
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <Input
@@ -103,11 +105,13 @@ export default function SectionNameInput() {
                             className="w-full"
                             value={newSection}
                             onChange={(e) => setNewSection(e.target.value)}
-                            placeholder="e.g. 6-1 or 6-1, 6-2"
+                            placeholder={uiLanguage === "japanese" ? `例： ６年１組`
+                                : `e.g. 6-1 or 6-1, 6-2`}
                         />
 
                         <p className="text-xs text-muted-foreground">
-                            Tip: separate multiple sections with commas.
+                            {uiLanguage === "japanese" ? `複数ある場合はカンマ区切りで入力してください。`
+                                : `Tip: separate multiple sections with commas.`}
                         </p>
                     </form>
 
@@ -146,7 +150,9 @@ export default function SectionNameInput() {
             <Button
                 type="submit" disabled={sections.length === 0 && (!newSection.trim() && !displayName?.trim())}
                 onClick={handleAdd}>
-                Add Sections
+                {uiLanguage === "japanese" ? `組を追加`
+                    : `Add Sections`}
+
             </Button>
 
         </>
