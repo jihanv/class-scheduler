@@ -37,7 +37,7 @@ export default function ClassNameInput() {
                 </SelectContent>
             </Select>
 
-            <H1>Write Course Name</H1>
+            <H1>{uiLanguage === "japanese" ? "授業名を入力してください" : "Write Course Name"}</H1>
             <Input
                 className="w-full"
                 type="text"
@@ -45,11 +45,11 @@ export default function ClassNameInput() {
                 onChange={(e) => {
                     setCourseName(e.target.value);
                 }}
-                placeholder="e.g. English 101"
+                placeholder={uiLanguage === "japanese" ? "例: 英語論理表現 III" : "e.g. English 101"}
             ></Input>
 
             <Button onClick={() => confirm()} disabled={!courseName?.trim()}>
-                Set Course Name
+                {uiLanguage === "japanese" ? "授業名を確定" : "Set Course Name"}
             </Button>
         </>
     );
