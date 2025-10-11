@@ -7,10 +7,13 @@ import {
   max as maxDate,
   addDays,
 } from "date-fns";
-import type { ScheduleByDay, WeekdayKey } from "@/lib/types";
+import type { Language, ScheduleByDay, WeekdayKey } from "@/lib/types";
 import { emptySchedule } from "@/lib/constants";
 
 export type ScheduleStore = {
+  uiLanguage: Language;
+  setUiLanguage: (language: Language) => void;
+
   courseName: string;
   setCourseName: (name: string) => void;
 
@@ -221,4 +224,11 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
     set((state) => ({
       showHolidaySelector: !state.showHolidaySelector,
     })),
+
+  uiLanguage: "japanese",
+  setUiLanguage: (language) => {
+    set(() => ({
+      uiLanguage: language,
+    }));
+  },
 }));

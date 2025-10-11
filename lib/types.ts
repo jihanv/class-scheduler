@@ -70,6 +70,8 @@ export type DateButtonProps = {
   max?: Date;
 };
 
+export type Language = "english" | "japanese";
+
 export type PeriodGridProps = {
   periods?: number;
   value: Record<WeekdayKey, number[]>;
