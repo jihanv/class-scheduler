@@ -37,7 +37,7 @@ export default function HolidaySelector() {
     const { startDate, endDate, holidays, setHolidays, showHolidaySelector, pendingHolidays, setPendingHolidays, displayName, sections, schedule, setShowHolidaySelector } =
         useScheduleStore();
 
-    const [country, setCountry] = React.useState<"US" | "JP" | "CA">("US");
+    const [country, setCountry] = React.useState<"US" | "JP" | "CA">("JP");
     const [loadingHolidays, setLoadingHolidays] = React.useState(false);
 
     function addNationalHolidaysStub() {

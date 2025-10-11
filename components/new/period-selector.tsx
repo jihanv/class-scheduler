@@ -12,7 +12,7 @@ export default function PeriodSelector() {
     return (
         <>
             <Button
-                disabled={!displayName?.trim() && sections.length === 0}
+                disabled={sections.length === 0}
                 onClick={() => setShowPeriodSelector()}>Select Periods</Button>
             {showPeriodSelector && <Card>
                 <CardHeader>
