@@ -95,7 +95,7 @@ export default function SectionNameInput() {
                 <>
                     <H1>
 
-                        {uiLanguage === "japanese" ? `${displayName} の組を入力してください`
+                        {uiLanguage === "japanese" ? `${displayName}の組を入力してください`
                             : `Write the Sections for ${displayName}`}
 
                     </H1>
