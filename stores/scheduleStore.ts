@@ -63,6 +63,16 @@ export type ScheduleStore = {
   commitPendingHolidays: () => void;
 };
 
+function detectBrowserLanguage(): Language {
+  if (typeof navigator !== "undefined") {
+    const lang = navigator.language || (navigator as any).userLanguage;
+    if (lang && lang.toLowerCase().startsWith("ja")) {
+      return "japanese";
+    }
+  }
+  return "english";
+}
+
 export const useScheduleStore = create<ScheduleStore>((set, get) => ({
   pendingHolidays: [],
   setPendingHolidays: (dates) => set({ pendingHolidays: dates }),
@@ -225,7 +235,7 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
       showHolidaySelector: !state.showHolidaySelector,
     })),
 
-  uiLanguage: "japanese",
+  uiLanguage: detectBrowserLanguage(),
   setUiLanguage: (language) => {
     set(() => ({
       uiLanguage: language,
