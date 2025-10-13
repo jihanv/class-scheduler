@@ -55,8 +55,9 @@ export default function DateButton({
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
+                        uiLanguage={uiLanguage}
                         mode="single"
-                        locale={enUS}
+                        locale={uiLanguage === "japanese" ? ja : enUS}
                         selected={date}
                         onSelect={(d) => {
                             setDateAction(d);

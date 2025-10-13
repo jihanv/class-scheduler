@@ -9,11 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "../ui/button";
 import { useScheduleStore } from "@/stores/scheduleStore";
 import { emptySchedule } from "@/lib/constants";
+import ExportExcelButtonJa from "./excel-jp-btn";
+import WeeklyTablesJa from "./weekly-tables-jp";
 
 export default function Calculator() {
     const showWeeklyPreview = useScheduleStore(s => s.showWeeklyPreview);
     const setShowWeeklyPreview = useScheduleStore(s => s.setShowWeeklyPreview);
-    const { commitPendingHolidays, displayName, sections, startDate, endDate, schedule } = useScheduleStore();
+    const { commitPendingHolidays, displayName, sections, startDate, endDate, schedule, uiLanguage } = useScheduleStore();
     return (
         <div className="flex flex-col gap-5 p-10">
             <ClassNameInput />
@@ -29,7 +31,7 @@ export default function Calculator() {
                     setShowWeeklyPreview(true);  // ✅ open preview dialog
                 }}
             >
-                Show Schedule
+                {uiLanguage === "japanese" ? "時間割を表示" : "Show Schedule"}
             </Button>
 
             {/* Your dialog controlled by the store */}
@@ -40,12 +42,14 @@ export default function Calculator() {
                     </DialogHeader>
                     <div className="max-h-[70vh] overflow-auto p-4">
                         {/* WeeklyTables reads `holidays` (now up to date) */}
-                        <WeeklyTables />
+                        {uiLanguage === "japanese" ? <WeeklyTablesJa /> : <WeeklyTables />}
+
                     </div>
                 </DialogContent>
             </Dialog>
 
-            <ExportExcelButton />
+            {uiLanguage === "japanese" ? <ExportExcelButtonJa /> : <ExportExcelButton />}
+
         </div>
     );
 }
