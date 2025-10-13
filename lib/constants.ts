@@ -70,3 +70,38 @@ export const EXCEL_BADGE_PALETTE: Array<{ fill: string; font: string }> = [
 
 export const HOLIDAY_FILL = "FFF3F4F6";
 export const HOLIDAY_FONT = "FF6B7280";
+
+export const WEEKDAY_LABELS = {
+  english: {
+    Mon: "Mon",
+    Tue: "Tue",
+    Wed: "Wed",
+    Thu: "Thu",
+    Fri: "Fri",
+    Sat: "Sat",
+    Sun: "Sun",
+  },
+  japanese: {
+    Mon: "月",
+    Tue: "火",
+    Wed: "水",
+    Thu: "木",
+    Fri: "金",
+    Sat: "土",
+    Sun: "日",
+  },
+} as const;
+
+export function getDisplayWeekdays(
+  uiLanguage: "english" | "japanese",
+  startOnSunday = false
+) {
+  const order = startOnSunday
+    ? (["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const)
+    : (["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const);
+  return order.map((k) => ({
+    key: k as WeekdayKey,
+    label:
+      WEEKDAY_LABELS[uiLanguage][k as keyof (typeof WEEKDAY_LABELS)["english"]],
+  }));
+}

@@ -7,9 +7,15 @@ import {
   ChevronRightIcon,
 } from "lucide-react"
 import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker"
-
+import { ja, enUS } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { Language } from "@/lib/types"
+
+type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+  buttonVariant?: React.ComponentProps<typeof Button>["variant"];
+  uiLanguage?: Language; // ✅ add this
+};
 
 function Calendar({
   className,
@@ -19,15 +25,17 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
+  uiLanguage = "english",
   ...props
-}: React.ComponentProps<typeof DayPicker> & {
-  buttonVariant?: React.ComponentProps<typeof Button>["variant"]
-}) {
+}: CalendarProps
+) {
   const defaultClassNames = getDefaultClassNames()
+  const locale = uiLanguage === "japanese" ? ja : enUS
 
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      locale={locale}
       className={cn(
         "bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,

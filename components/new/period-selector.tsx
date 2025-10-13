@@ -8,16 +8,21 @@ import { useScheduleStore } from "@/stores/scheduleStore";
 import { Button } from "../ui/button";
 
 export default function PeriodSelector() {
-    const { showPeriodSelector, setShowPeriodSelector, displayName, sections, startDate, endDate } = useScheduleStore();
+    const { showPeriodSelector, setShowPeriodSelector, sections, uiLanguage } = useScheduleStore();
     return (
         <>
             <Button
                 disabled={sections.length === 0}
-                onClick={() => setShowPeriodSelector()}>Select Periods</Button>
+                onClick={() => setShowPeriodSelector()}>
+                {uiLanguage === "japanese" ? `時限を選択`
+                    : `Select Periods`}</Button>
             {showPeriodSelector && <Card>
                 <CardHeader>
-                    <CardTitle>Weekly periods</CardTitle>
-                    <CardDescription>Choose which periods meet on which weekdays.</CardDescription>
+                    <CardTitle>{uiLanguage === "japanese" ? `週間時限`
+                        : `Weekly periods`}</CardTitle>
+                    <CardDescription>
+                        {uiLanguage === "japanese" ? `曜日ごとに授業が行われる時限を選択してください。`
+                            : `Choose which periods meet on which weekdays.`}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <ScrollArea className="rounded-md">

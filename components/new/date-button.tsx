@@ -16,9 +16,10 @@ import {
     isBefore,
     startOfDay,
 } from "date-fns";
-import { enUS } from "date-fns/locale";
+import { enUS, ja } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateButtonProps } from "@/lib/types";
+import { useScheduleStore } from "@/stores/scheduleStore";
 
 
 export default function DateButton({
@@ -29,6 +30,7 @@ export default function DateButton({
     max,
 }: DateButtonProps) {
     const [open, setOpen] = React.useState(false);
+    const { uiLanguage } = useScheduleStore();
 
     return (
         <div className="flex flex-col gap-2">
@@ -38,7 +40,15 @@ export default function DateButton({
                     <Button variant="outline" className="w-64 justify-between font-normal">
                         <span className="inline-flex items-center gap-2">
                             <CalendarIcon className="size-4" />
-                            {date ? format(date, "yyyy-MM-dd (EEE)", { locale: enUS }) : "Select date"}
+                            {date
+                                ? format(
+                                    date,
+                                    "yyyy-MM-dd (EEE)", // Same format works in both languages
+                                    { locale: uiLanguage === "japanese" ? ja : enUS }
+                                )
+                                : uiLanguage === "japanese"
+                                    ? "日付を選択"
+                                    : "Select date"}
                         </span>
                         <span className="text-muted-foreground">▾</span>
                     </Button>

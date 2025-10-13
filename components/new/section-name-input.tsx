@@ -105,7 +105,7 @@ export default function SectionNameInput() {
                             className="w-full"
                             value={newSection}
                             onChange={(e) => setNewSection(e.target.value)}
-                            placeholder={uiLanguage === "japanese" ? `例： ６年１組`
+                            placeholder={uiLanguage === "japanese" ? `例： 6年1組`
                                 : `e.g. 6-1 or 6-1, 6-2`}
                         />
 

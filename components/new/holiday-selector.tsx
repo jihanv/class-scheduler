@@ -34,7 +34,7 @@ function monthsBetweenInclusive(a: Date, b: Date) {
 
 
 export default function HolidaySelector() {
-    const { startDate, endDate, holidays, setHolidays, showHolidaySelector, pendingHolidays, setPendingHolidays, displayName, sections, schedule, setShowHolidaySelector } =
+    const { startDate, endDate, holidays, setHolidays, showHolidaySelector, pendingHolidays, uiLanguage, setPendingHolidays, displayName, sections, schedule, setShowHolidaySelector } =
         useScheduleStore();
 
     const [country, setCountry] = React.useState<"US" | "JP" | "CA">("JP");
@@ -99,21 +99,22 @@ export default function HolidaySelector() {
                 disabled={!displayName?.trim() || !sections || !startDate || !endDate || !schedule}
                 className='w-full'
                 onClick={() => setShowHolidaySelector()}
-            > Select Holidays</Button>
+            > {uiLanguage === "japanese" ? `祝日を選択` : `Select Holidays`}</Button>
 
             {(showHolidaySelector) && (startDate && endDate) && <>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Holidays</CardTitle>
+                        <CardTitle>
+                            {uiLanguage === "japanese" ? `祝日` : `Holidays`}</CardTitle>
                         <CardDescription>
-                            Select blackout dates inside the range.
+                            {uiLanguage === "japanese" ? `国を選択し「祝日を自動追加」をクリックすると、期間内の国民の祝日を自動で追加できます。追加後、学校行事による休講日（例：文化祭・体育祭・入試 など）もカレンダー上で選択してください。` : `Select blackout dates inside the range.`}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         {/* Country selector + Add button */}
                         <div className="mt-4 flex flex-wrap items-center gap-2">
                             <label htmlFor="country" className="text-sm text-muted-foreground">
-                                Country
+                                {uiLanguage === "japanese" ? `国` : `Country`}
                             </label>
                             <select
                                 id="country"
@@ -122,18 +123,25 @@ export default function HolidaySelector() {
                                 onChange={(e) => setCountry(e.target.value as "US" | "JP" | "CA")}
                             >
                                 <option value="US">United States</option>
-                                <option value="JP">Japan</option>
+                                <option value="JP">日本</option>
                                 <option value="CA">Canada</option>
                             </select>
 
                             <Button onClick={addNationalHolidays} disabled={!startDate || !endDate || loadingHolidays}>
-                                {loadingHolidays ? "Adding…" : "Add national holidays"}
+                                {loadingHolidays
+                                    ? uiLanguage === "japanese"
+                                        ? "追加中…"
+                                        : "Adding…"
+                                    : uiLanguage === "japanese"
+                                        ? "祝日を自動追加"
+                                        : "Add national holidays"}
                             </Button>
                         </div>
 
                         {startDate && endDate ? (
                             <div className="overflow-x-auto">
                                 <Calendar
+                                    uiLanguage={uiLanguage}
                                     mode="multiple"
                                     month={startOfMonth(startDate)}
                                     numberOfMonths={monthsBetweenInclusive(
@@ -171,7 +179,7 @@ export default function HolidaySelector() {
                                 setPendingHolidays([])
                                 setHolidays([])
                             }}>
-                                Clear All
+                                {uiLanguage === "japanese" ? `すべてクリア` : `Clear all`}
                             </Button>
 
                         </div>
