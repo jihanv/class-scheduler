@@ -12,57 +12,96 @@ import {
 } from "../ui/popover";
 import { format } from "date-fns";
 
+
 function dayKeyFromDate(d: Date): "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" {
     const day = d.getDay(); // 0=Sun..6=Sat
     const KEYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
-    if (day === 0) return "Mon"; // never scheduling Sundays here; safe fallback
+    if (day === 0) return "Mon"; // we never schedule Sunday; safe fallback
     return KEYS[day - 1];
 }
+
 function sameDay(a: Date, b: Date) {
     return a.getFullYear() === b.getFullYear()
         && a.getMonth() === b.getMonth()
         && a.getDate() === b.getDate();
 }
+
 function isHoliday(d: Date, holidays: Date[]) {
     return holidays?.some((h) => sameDay(h, d));
 }
 
+
 export default function MeetingList() {
     const { startDate, endDate, schedule, sections, holidays } = useScheduleStore();
 
-    const { perSectionCounts, maxMeetings } = useMemo(() => {
+    const { perSectionCounts, perSectionMeetings, maxMeetings } = React.useMemo(() => {
+        // If we don’t have the basics, return empty results
         if (!startDate || !endDate || sections.length === 0) {
-            return { perSectionCounts: new Map<string, number>(), maxMeetings: 0 };
+            return {
+                perSectionCounts: new Map<string, number>(),
+                perSectionMeetings: new Map<string, { date: Date; period: number; meetingNumber: number }[]>(),
+                maxMeetings: 0,
+            };
         }
 
-        // init counts
-        const counts = new Map<string, number>(sections.map((s) => [s, 0]));
-
-        // walk the date range (skip Sundays + holidays)
+        // 1) Walk every day in the chosen range
+        const rawSlots: { date: Date; period: number; section: string }[] = [];
         const cur = new Date(startDate);
         const end = new Date(endDate);
 
         while (cur <= end) {
-            if (cur.getDay() !== 0 && !isHoliday(cur, holidays)) {
-                const dayKey = dayKeyFromDate(cur);
+            const isSunday = cur.getDay() === 0;
+            if (!isSunday && !isHoliday(cur, holidays)) {
+                const key = dayKeyFromDate(cur);
                 for (const p of PERIODS) {
-                    const assigned = schedule[dayKey]?.[p];
-                    if (assigned) counts.set(assigned, (counts.get(assigned) ?? 0) + 1);
+                    const assigned = schedule[key]?.[p];
+                    if (assigned) {
+                        rawSlots.push({ date: new Date(cur), period: p, section: assigned });
+                    }
                 }
             }
             cur.setDate(cur.getDate() + 1);
         }
 
+        // 2) Sort strictly by date, then by period (chronological)
+        rawSlots.sort((a, b) => a.date.getTime() - b.date.getTime() || a.period - b.period);
+
+        // 3) Build per-section running counts + lists
+        const perSectionCounts = new Map<string, number>();
+        const perSectionMeetings = new Map<string, { date: Date; period: number; meetingNumber: number }[]>();
+        const counters = new Map<string, number>(); // section -> next meeting number
+
+        // initialize for all sections so empty ones still render “0”
+        for (const s of sections) {
+            perSectionCounts.set(s, 0);
+            perSectionMeetings.set(s, []);
+            counters.set(s, 0);
+        }
+
+        for (const slot of rawSlots) {
+            const next = (counters.get(slot.section) ?? 0) + 1;
+            counters.set(slot.section, next);
+
+            perSectionCounts.set(slot.section, (perSectionCounts.get(slot.section) ?? 0) + 1);
+            perSectionMeetings.get(slot.section)!.push({
+                date: slot.date,
+                period: slot.period,
+                meetingNumber: next,
+            });
+        }
+
+        // 4) find the maximum to show “Max = …”
         let max = 0;
-        for (const [, n] of counts) if (n > max) max = n;
+        for (const [, n] of perSectionCounts) if (n > max) max = n;
 
-        return { perSectionCounts: counts, maxMeetings: max };
-    }, [startDate, endDate, schedule, sections, holidays]);
-
+        return { perSectionCounts, perSectionMeetings, maxMeetings: max };
+    }, [startDate, endDate, sections, schedule, holidays]);
     const items = useMemo(
         () => Array.from({ length: maxMeetings }, (_, i) => i + 1),
         [maxMeetings]
     );
+
+
 
     return (
         <div className="p-4 bg-gray-300">
@@ -91,14 +130,29 @@ export default function MeetingList() {
                                     </PopoverTrigger>
 
                                     <PopoverContent className="w-72" align="start">
-                                        {/* placeholder for now — we’ll render the real list next step */}
-                                        <div className="text-sm">
-                                            <div className="font-semibold mb-1">{s} — Meetings</div>
-                                            <p className="text-muted-foreground">
-                                                List with meeting number + date goes here.
+                                        {(perSectionCounts.get(s) ?? 0) === 0 ? (
+                                            <p className="text-sm text-muted-foreground">
+                                                No meetings for this section.
                                             </p>
-                                        </div>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                <div className="text-sm font-semibold">{s} — Meetings</div>
+                                                <ul className="space-y-1 max-h-60 overflow-auto pr-1">
+                                                    {perSectionMeetings.get(s)!.map((m) => (
+                                                        <li key={`${s}-${m.meetingNumber}-${m.date.toISOString()}-${m.period}`}>
+                                                            <div className="text-sm leading-tight">
+                                                                <div className="font-medium">Meeting {m.meetingNumber}</div>
+                                                                <div className="text-xs text-muted-foreground">
+                                                                    {format(m.date, "yyyy-MM-dd (EEE)")}
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
                                     </PopoverContent>
+
                                 </Popover>
                             </li>
                         );
