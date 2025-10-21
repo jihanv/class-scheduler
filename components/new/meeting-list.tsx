@@ -107,9 +107,7 @@ export default function MeetingList() {
         <div className="p-4 bg-gray-300">
             <div className="flex items-center justify-between mb-2">
                 <H1>Lessons</H1>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-muted">
-                    Max = {maxMeetings}
-                </span>
+
             </div>
 
             {/* Per-section summary */}

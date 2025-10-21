@@ -11,6 +11,7 @@ import { useScheduleStore } from "@/stores/scheduleStore";
 import { emptySchedule } from "@/lib/constants";
 import ExportExcelButtonJa from "./excel-jp-btn";
 import WeeklyTablesJa from "./weekly-tables-jp";
+import LanguageSelector from "./language-input";
 
 export default function Calculator() {
     const showWeeklyPreview = useScheduleStore(s => s.showWeeklyPreview);
@@ -18,7 +19,6 @@ export default function Calculator() {
     const { commitPendingHolidays, displayName, sections, startDate, endDate, schedule, uiLanguage } = useScheduleStore();
     return (
         <div className="flex flex-col gap-5 p-10">
-            {/* <ClassNameInput /> */}
             <SectionNameInput />
             <PeriodSelector />
             <DateSelector />
