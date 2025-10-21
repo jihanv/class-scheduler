@@ -247,7 +247,7 @@ export default function ExportExcelButton() {
 
 
     return (
-        <Button disabled={!displayName?.trim() || !sections || !startDate || !endDate || schedule === emptySchedule()} onClick={() => {
+        <Button disabled={!sections || !startDate || !endDate || schedule === emptySchedule()} onClick={() => {
             handleExport()
         }
         } variant="default">

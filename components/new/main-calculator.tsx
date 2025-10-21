@@ -24,7 +24,7 @@ export default function Calculator() {
             <DateSelector />
             <HolidaySelector />
             <Button
-                disabled={!displayName?.trim() || !sections || !startDate || !endDate || schedule === emptySchedule()}
+                disabled={!sections || !startDate || !endDate || schedule === emptySchedule()}
                 className="w-full"
                 onClick={() => {
                     commitPendingHolidays();     // ✅ sync local → global

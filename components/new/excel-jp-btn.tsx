@@ -237,7 +237,7 @@ export default function ExportExcelButtonJa() {
     return (
         <Button
             disabled={
-                !displayName?.trim() ||
+
                 !sections ||
                 !startDate ||
                 !endDate ||

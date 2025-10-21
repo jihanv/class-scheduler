@@ -96,7 +96,7 @@ export default function HolidaySelector() {
     return (
         <>
             <Button
-                disabled={!displayName?.trim() || !sections || !startDate || !endDate || !schedule}
+                disabled={!sections || !startDate || !endDate || !schedule}
                 className='w-full'
                 onClick={() => setShowHolidaySelector()}
             > {uiLanguage === "japanese" ? `祝日を選択` : `Select Holidays`}</Button>

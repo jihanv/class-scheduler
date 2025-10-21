@@ -99,7 +99,7 @@ export default function SectionNameInput() {
                         value={newSection}
                         onChange={(e) => setNewSection(e.target.value)}
                         placeholder={
-                            uiLanguage === "japanese" ? `例： 6年1組` : `e.g. 6-1 or 6-1, 6-2`
+                            uiLanguage === "japanese" ? `例： 数学IIB５ー３組` : `e.g. English 6-1`
                         }
                     />
 
