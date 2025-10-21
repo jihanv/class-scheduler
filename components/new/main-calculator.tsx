@@ -18,7 +18,7 @@ export default function Calculator() {
     const { commitPendingHolidays, displayName, sections, startDate, endDate, schedule, uiLanguage } = useScheduleStore();
     return (
         <div className="flex flex-col gap-5 p-10">
-            <ClassNameInput />
+            {/* <ClassNameInput /> */}
             <SectionNameInput />
             <PeriodSelector />
             <DateSelector />

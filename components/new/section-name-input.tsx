@@ -91,62 +91,62 @@ export default function SectionNameInput() {
         <>
             {" "}
 
-            {displayName && (
-                <>
-                    <H1>
+            {/* {displayName && ( */}
+            <>
+                <H1>
 
-                        {uiLanguage === "japanese" ? `${displayName}の組を入力してください`
-                            : `Write the Sections for ${displayName}`}
+                    {uiLanguage === "japanese" ? `${displayName}の組を入力してください`
+                        : `Write the Sections for ${displayName}`}
 
-                    </H1>
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <Input
-                            type="text"
-                            className="w-full"
-                            value={newSection}
-                            onChange={(e) => setNewSection(e.target.value)}
-                            placeholder={uiLanguage === "japanese" ? `例： 6年1組`
-                                : `e.g. 6-1 or 6-1, 6-2`}
-                        />
+                </H1>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    <Input
+                        type="text"
+                        className="w-full"
+                        value={newSection}
+                        onChange={(e) => setNewSection(e.target.value)}
+                        placeholder={uiLanguage === "japanese" ? `例： 6年1組`
+                            : `e.g. 6-1 or 6-1, 6-2`}
+                    />
 
-                        <p className="text-xs text-muted-foreground">
-                            {uiLanguage === "japanese" ? `複数ある場合はカンマ区切りで入力してください。`
-                                : `Tip: separate multiple sections with commas.`}
-                        </p>
-                    </form>
+                    <p className="text-xs text-muted-foreground">
+                        {uiLanguage === "japanese" ? `複数ある場合はカンマ区切りで入力してください。`
+                            : `Tip: separate multiple sections with commas.`}
+                    </p>
+                </form>
 
-                    {/* Badges area */}
-                    <div className="mt-2 min-h-10 max-h-30 overflow-auto">
-                        <div className="flex flex-wrap gap-2">
-                            {sections.map((s, i) => (
-                                <span
-                                    key={s}
-                                    className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${BADGE_COLORS[i % BADGE_COLORS.length]
-                                        }`}
-                                >
-                                    {s}
-                                    <button
-                                        onClick={() => removeSection(s)}
-                                        className="hover:text-red-600 focus:outline-none"
-                                    >
-                                        <X size={14} />
-                                    </button>
-                                </span>
-                            ))}
-                            <div
-                                className={`mt-2 text-sm text-muted-foreground transition-opacity duration-500 ${fading ? "opacity-0" : "opacity-100"
-                                    } motion-reduce:transition-none motion-reduce:duration-0`}
-                                aria-live="polite"
+                {/* Badges area */}
+                <div className="mt-2 min-h-10 max-h-30 overflow-auto">
+                    <div className="flex flex-wrap gap-2">
+                        {sections.map((s, i) => (
+                            <span
+                                key={s}
+                                className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${BADGE_COLORS[i % BADGE_COLORS.length]
+                                    }`}
                             >
-                                {feedback ?? ""}
-                            </div>
+                                {s}
+                                <button
+                                    onClick={() => removeSection(s)}
+                                    className="hover:text-red-600 focus:outline-none"
+                                >
+                                    <X size={14} />
+                                </button>
+                            </span>
+                        ))}
+                        <div
+                            className={`mt-2 text-sm text-muted-foreground transition-opacity duration-500 ${fading ? "opacity-0" : "opacity-100"
+                                } motion-reduce:transition-none motion-reduce:duration-0`}
+                            aria-live="polite"
+                        >
+                            {feedback ?? ""}
                         </div>
                     </div>
+                </div>
 
 
 
-                </>
-            )}
+            </>
+            {/* )} */}
             <Button
                 type="submit" disabled={sections.length === 0 && (!newSection.trim() && !displayName?.trim())}
                 onClick={handleAdd}>
