@@ -8,13 +8,8 @@ import { X } from "lucide-react";
 import { BADGE_COLORS } from "@/lib/constants";
 
 export default function SectionNameInput() {
-    const {
-        displayName,
-        sections,
-        addSections,
-        removeSection,
-        uiLanguage
-    } = useScheduleStore();
+    const { displayName, sections, addSections, removeSection, uiLanguage } =
+        useScheduleStore();
     const [newSection, setNewSection] = useState("");
     const [feedback, setFeedback] = useState<string | null>(null);
     const [fading, setFading] = useState(false);
@@ -90,14 +85,12 @@ export default function SectionNameInput() {
     return (
         <>
             {" "}
-
             {/* {displayName && ( */}
             <>
                 <H1>
-
-                    {uiLanguage === "japanese" ? `${displayName}の組を入力してください`
-                        : `Write the Sections for ${displayName}`}
-
+                    {uiLanguage === "japanese"
+                        ? `担当しているクラスをすべて書いてください`
+                        : `Write Your Classes`}
                 </H1>
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <Input
@@ -105,12 +98,19 @@ export default function SectionNameInput() {
                         className="w-full"
                         value={newSection}
                         onChange={(e) => setNewSection(e.target.value)}
-                        placeholder={uiLanguage === "japanese" ? `例： 6年1組`
-                            : `e.g. 6-1 or 6-1, 6-2`}
+                        placeholder={
+                            uiLanguage === "japanese" ? `例： 6年1組` : `e.g. 6-1 or 6-1, 6-2`
+                        }
                     />
 
-                    <p className="text-xs text-muted-foreground">
-                        {uiLanguage === "japanese" ? `複数ある場合はカンマ区切りで入力してください。`
+                    <p className="text-xs text-muted-foreground whitespace-pre-line">
+                        {uiLanguage === "japanese"
+                            ? `1つずつ、または複数をカンマで区切って入力してください。
+                例：
+                ・1つずつ入力する場合：「数学IIB５ー３組」
+                ・複数入力する場合：「英表III６ー１組、英表II５ー３組」
+
+                ※「組を追加」ボタンを押したあとでも、必要に応じてクラスを追加・修正できます。`
                             : `Tip: separate multiple sections with commas.`}
                     </p>
                 </form>
@@ -142,19 +142,17 @@ export default function SectionNameInput() {
                         </div>
                     </div>
                 </div>
-
-
-
             </>
             {/* )} */}
             <Button
-                type="submit" disabled={sections.length === 0 && (!newSection.trim() && !displayName?.trim())}
-                onClick={handleAdd}>
-                {uiLanguage === "japanese" ? `組を追加`
-                    : `Add Sections`}
-
+                type="submit"
+                disabled={
+                    sections.length === 0 && !newSection.trim() && !displayName?.trim()
+                }
+                onClick={handleAdd}
+            >
+                {uiLanguage === "japanese" ? `組を追加` : `Add Sections`}
             </Button>
-
         </>
     );
 }
