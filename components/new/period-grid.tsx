@@ -41,14 +41,16 @@ export default function PeriodGrid() {
                                 const assignedSection = schedule[day]?.[p];
 
                                 return (
-                                    <td key={`${key}-${p}`} className="p-2 align-top">
-                                        <SectionPopover
-                                            day={day}
-                                            period={p}
-                                            assigned={assignedSection}
-                                            open={openCell?.day === day && openCell?.period === p}
-                                            onOpenChange={(o) => setOpenCell(o ? { day, period: p } : null)}
-                                        />
+                                    <td key={`${key}-${p}`} className="p-2 align-top h-full">
+                                        <div className="h-full">
+                                            <SectionPopover
+                                                day={day}
+                                                period={p}
+                                                assigned={assignedSection}
+                                                open={openCell?.day === day && openCell?.period === p}
+                                                onOpenChange={(o) => setOpenCell(o ? { day, period: p } : null)}
+                                            />
+                                        </div>
                                     </td>
                                 );
                             })}

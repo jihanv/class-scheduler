@@ -43,18 +43,14 @@ export default function SectionPopover({
             <PopoverTrigger asChild>
                 <Button
                     asChild
-                    className={`w-full h-12 rounded-md border px-2 text-sm flex flex-col items-center justify-start gap-0.5 ${assigned
-                        ? badgeColorFor(assigned)
-                        : "bg-background hover:bg-accent text-muted-foreground"
-                        }`}
+                    className={`w-full h-full min-h-[3.5rem] rounded-md border px-2 text-sm
+              flex flex-col items-center justify-center gap-0.5
+              ${assigned ? badgeColorFor(assigned) : "bg-background hover:bg-accent text-muted-foreground"}`}
                     aria-label={`Select ${day} period ${period}`}
                 >
-                    <div className="w-full h-full flex flex-col items-center justify-start gap-0.5 px-2">
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-0.5 px-2">
                         <span className="font-medium leading-none">{period}</span>
-                        <span
-                            className={`text-xs leading-none h-4 transition-opacity ${assigned ? "opacity-100" : "opacity-0"
-                                }`}
-                        >
+                        <span className={`text-xs text-center break-words whitespace-normal leading-tight transition-opacity ${assigned ? "opacity-100" : "opacity-0"}`}>
                             {assigned || "placeholder"}
                         </span>
                     </div>
