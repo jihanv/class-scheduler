@@ -123,7 +123,7 @@ export default function HolidaySelector() {
                                 onChange={(e) => setCountry(e.target.value as "US" | "JP" | "CA")}
                             >
                                 <option value="US">United States</option>
-                                <option value="JP">日本</option>
+                                <option value="JP">{uiLanguage === "japanese" ? "日本" : "Japan"}</option>
                                 <option value="CA">Canada</option>
                             </select>
 
