@@ -11,9 +11,6 @@ export default function PeriodGrid() {
     const schedule = useScheduleStore((s) => s.schedule);
     const { uiLanguage } = useScheduleStore()
     const [openCell, setOpenCell] = useState<CellCoord | null>(null);
-    const [tempSelection, setTempSelection] = useState<string>("");
-
-    const assigned = (day: WeekdayKey, period: number) => schedule[day]?.[period];
 
     // 👇 labels for the header, display-only
     const displayWeekdays = getDisplayWeekdays(uiLanguage /*, startOnSunday? */);

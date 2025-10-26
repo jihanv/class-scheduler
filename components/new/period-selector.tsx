@@ -26,7 +26,7 @@ export default function PeriodSelector() {
                 </CardHeader>
                 <CardContent>
                     <ScrollArea className="rounded-md">
-                        <PeriodGrid />
+                        {sections.length > 0 && <PeriodGrid />}
                     </ScrollArea>
                 </CardContent>
             </Card>}

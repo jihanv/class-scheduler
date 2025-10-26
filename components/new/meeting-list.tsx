@@ -82,7 +82,14 @@ export default function MeetingList() {
             const next = (counters.get(slot.section) ?? 0) + 1;
             counters.set(slot.section, next);
 
+            if (!sections.includes(slot.section)) continue;
+
+
             perSectionCounts.set(slot.section, (perSectionCounts.get(slot.section) ?? 0) + 1);
+
+            if (!perSectionMeetings.has(slot.section)) {
+                perSectionMeetings.set(slot.section, []);
+            }
             perSectionMeetings.get(slot.section)!.push({
                 date: slot.date,
                 period: slot.period,
