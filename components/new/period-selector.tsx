@@ -16,7 +16,7 @@ export default function PeriodSelector() {
                 onClick={() => setShowPeriodSelector()}>
                 {uiLanguage === "japanese" ? `時限を選択`
                     : `Select Periods`}</Button>
-            {showPeriodSelector && <Card>
+            {showPeriodSelector && sections.length > 0 && <Card>
                 <CardHeader>
                     <CardTitle>{uiLanguage === "japanese" ? `週間時限`
                         : `Weekly periods`}</CardTitle>
@@ -26,7 +26,7 @@ export default function PeriodSelector() {
                 </CardHeader>
                 <CardContent>
                     <ScrollArea className="rounded-md">
-                        {sections.length > 0 && <PeriodGrid />}
+                        <PeriodGrid />
                     </ScrollArea>
                 </CardContent>
             </Card>}
