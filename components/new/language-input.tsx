@@ -8,12 +8,6 @@ export default function LanguageSelector() {
     const { courseName, setDisplayName, uiLanguage, setUiLanguage } =
         useScheduleStore();
 
-    const confirm = () => {
-        const trimmed = (courseName ?? "").trim();
-        if (trimmed) {
-            setDisplayName(trimmed)
-        };
-    };
 
     return (
         <>

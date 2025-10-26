@@ -7,8 +7,6 @@ import LanguageSelector from './language-input'
 
 export default function InformationDisplay() {
 
-
-    const { displayName, uiLanguage } = useScheduleStore()
     return (
 
         <>

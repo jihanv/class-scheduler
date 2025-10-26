@@ -71,7 +71,7 @@ function dateKey(d: Date) {
 }
 
 export default function ExportExcelButtonJa() {
-    const { startDate, endDate, schedule, sections, displayName, pendingHolidays } =
+    const { startDate, endDate, schedule, sections, pendingHolidays } =
         useScheduleStore();
 
     const handleExport = async () => {
@@ -241,7 +241,8 @@ export default function ExportExcelButtonJa() {
                 !sections ||
                 !startDate ||
                 !endDate ||
-                schedule === emptySchedule()
+                schedule === emptySchedule() ||
+                sections.length === 0
             }
             onClick={handleExport}
             variant="default"

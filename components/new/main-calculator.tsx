@@ -16,7 +16,7 @@ import LanguageSelector from "./language-input";
 export default function Calculator() {
     const showWeeklyPreview = useScheduleStore(s => s.showWeeklyPreview);
     const setShowWeeklyPreview = useScheduleStore(s => s.setShowWeeklyPreview);
-    const { commitPendingHolidays, displayName, sections, startDate, endDate, schedule, uiLanguage } = useScheduleStore();
+    const { commitPendingHolidays, sections, startDate, endDate, schedule, uiLanguage } = useScheduleStore();
     return (
         <div className="flex flex-col gap-5 p-10">
             <SectionNameInput />
@@ -24,7 +24,7 @@ export default function Calculator() {
             <DateSelector />
             <HolidaySelector />
             <Button
-                disabled={!sections || !startDate || !endDate || schedule === emptySchedule()}
+                disabled={!sections || !startDate || !endDate || schedule === emptySchedule() || sections.length === 0}
                 className="w-full"
                 onClick={() => {
                     commitPendingHolidays();     // ✅ sync local → global

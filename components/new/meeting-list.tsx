@@ -32,7 +32,7 @@ function isHoliday(d: Date, holidays: Date[]) {
 
 
 export default function MeetingList() {
-    const { startDate, endDate, schedule, sections, holidays } = useScheduleStore();
+    const { startDate, endDate, schedule, sections, holidays, uiLanguage } = useScheduleStore();
 
     const { perSectionCounts, perSectionMeetings, maxMeetings } = React.useMemo(() => {
         // If we don’t have the basics, return empty results
@@ -159,7 +159,7 @@ export default function MeetingList() {
             )}
             {maxMeetings === 0 && (
                 <p className="text-sm text-muted-foreground">
-                    No meetings to list yet. Add sections, pick dates, assign periods, and exclude holidays.
+                    {uiLanguage === "japanese" ? "まだ授業が一覧にありません。科目を追加し、日付を選び、時限を割り当てて、休日を除外してください。" : "No meetings to list yet. Add sections, pick dates, assign periods, and exclude holidays."}
                 </p>
             )}
         </div>

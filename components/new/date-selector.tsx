@@ -11,7 +11,7 @@ import { useScheduleStore } from '@/stores/scheduleStore';
 import { Button } from '../ui/button';
 
 export default function DateSelector() {
-    const { startDate, setStartDate, endDate, setEndDate, showDateSelector, setShowDateSelector, schedule, uiLanguage } = useScheduleStore();
+    const { startDate, setStartDate, endDate, setEndDate, showDateSelector, setShowDateSelector, schedule, uiLanguage, sections } = useScheduleStore();
     const maxEnd = startDate ? startOfDay(addDays(startDate, 183)) : undefined;
 
     const hasAnyAssigned = React.useMemo(() => {
@@ -24,7 +24,7 @@ export default function DateSelector() {
     return (
         <>
             <Button
-                disabled={!hasAnyAssigned}
+                disabled={!hasAnyAssigned || sections.length === 0}
                 onClick={() => setShowDateSelector()}
             >
 

@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 import { BADGE_COLORS } from "@/lib/constants";
 
 export default function SectionNameInput() {
-    const { displayName, sections, addSections, removeSection, uiLanguage } =
+    const { sections, addSections, removeSection, uiLanguage } =
         useScheduleStore();
     const [newSection, setNewSection] = useState("");
     const [feedback, setFeedback] = useState<string | null>(null);
@@ -85,7 +85,6 @@ export default function SectionNameInput() {
     return (
         <>
             {" "}
-            {/* {displayName && ( */}
             <>
                 <H1>
                     {uiLanguage === "japanese"
@@ -147,7 +146,7 @@ export default function SectionNameInput() {
             <Button
                 type="submit"
                 disabled={
-                    sections.length === 0 && !newSection.trim() && !displayName?.trim()
+                    sections.length === 0 && !newSection.trim()
                 }
                 onClick={handleAdd}
             >
