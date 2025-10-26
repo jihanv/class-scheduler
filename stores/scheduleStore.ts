@@ -257,6 +257,15 @@ export const useScheduleStore = create<ScheduleStore>()(
           }
         }
       },
+      partialize: (state) => ({
+        uiLanguage: state.uiLanguage,
+        courseName: state.courseName,
+        sections: state.sections,
+        startDate: state.startDate,
+        endDate: state.endDate,
+        holidays: state.holidays,
+        schedule: state.schedule,
+      }),
     }
   )
 );

@@ -34,7 +34,7 @@ function monthsBetweenInclusive(a: Date, b: Date) {
 
 
 export default function HolidaySelector() {
-    const { startDate, endDate, holidays, setHolidays, showHolidaySelector, pendingHolidays, uiLanguage, setPendingHolidays, displayName, sections, schedule, setShowHolidaySelector } =
+    const { startDate, endDate, holidays, setHolidays, showHolidaySelector, pendingHolidays, uiLanguage, setPendingHolidays, sections, schedule, setShowHolidaySelector } =
         useScheduleStore();
 
     const [country, setCountry] = React.useState<"US" | "JP" | "CA">("JP");
@@ -96,12 +96,12 @@ export default function HolidaySelector() {
     return (
         <>
             <Button
-                disabled={!sections || !startDate || !endDate || !schedule}
+                disabled={!sections || !startDate || !endDate || !schedule || sections.length === 0}
                 className='w-full'
                 onClick={() => setShowHolidaySelector()}
             > {uiLanguage === "japanese" ? `祝日を選択` : `Select Holidays`}</Button>
 
-            {(showHolidaySelector) && (startDate && endDate) && <>
+            {(showHolidaySelector) && (startDate && endDate) && sections.length > 0 && <>
                 <Card>
                     <CardHeader>
                         <CardTitle>
