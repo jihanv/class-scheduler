@@ -103,9 +103,26 @@ export const useScheduleStore = create<ScheduleStore>()(
       },
 
       removeSection: (section) =>
-        set((state) => ({
-          sections: state.sections.filter((s) => s !== section),
-        })),
+        set((state) => {
+          // Clone the schedule and delete any cell that matches the removed section
+          const nextSchedule: typeof state.schedule = { ...state.schedule };
+          for (const day of Object.keys(
+            nextSchedule
+          ) as (keyof typeof nextSchedule)[]) {
+            const dayMap = { ...(nextSchedule[day] ?? {}) };
+            for (const p of Object.keys(dayMap)) {
+              if (dayMap[Number(p)] === section) {
+                delete dayMap[Number(p)];
+              }
+            }
+            nextSchedule[day] = dayMap;
+          }
+
+          return {
+            sections: state.sections.filter((s) => s !== section),
+            schedule: nextSchedule,
+          };
+        }),
 
       startDate: undefined,
 
