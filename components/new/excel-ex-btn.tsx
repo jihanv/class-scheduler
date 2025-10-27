@@ -71,10 +71,10 @@ function dateKey(d: Date) {
 
 export default function ExportExcelButton() {
 
-    const { startDate, endDate, schedule, sections, pendingHolidays, uiLanguage } = useScheduleStore();
+    const { startDate, endDate, schedule, sections, pendingHolidays, uiLanguage, commitPendingHolidays } = useScheduleStore();
 
     const handleExport = async () => {
-
+        commitPendingHolidays();
 
         if (!startDate || !endDate) {
             alert("Pick a start and end date first.");

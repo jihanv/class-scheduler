@@ -32,7 +32,7 @@ function isHoliday(d: Date, holidays: Date[]) {
 
 
 export default function MeetingList() {
-    const { startDate, endDate, schedule, sections, holidays, uiLanguage } = useScheduleStore();
+    const { startDate, endDate, schedule, sections, holidays, uiLanguage, pendingHolidays } = useScheduleStore();
 
     const { perSectionCounts, perSectionMeetings, maxMeetings } = React.useMemo(() => {
         // If we don’t have the basics, return empty results
@@ -51,7 +51,7 @@ export default function MeetingList() {
 
         while (cur <= end) {
             const isSunday = cur.getDay() === 0;
-            if (!isSunday && !isHoliday(cur, holidays)) {
+            if (!isSunday && !isHoliday(cur, pendingHolidays)) {
                 const key = dayKeyFromDate(cur);
                 for (const p of PERIODS) {
                     const assigned = schedule[key]?.[p];
@@ -102,7 +102,7 @@ export default function MeetingList() {
         for (const [, n] of perSectionCounts) if (n > max) max = n;
 
         return { perSectionCounts, perSectionMeetings, maxMeetings: max };
-    }, [startDate, endDate, sections, schedule, holidays]);
+    }, [startDate, endDate, sections, schedule, pendingHolidays]);
     const items = useMemo(
         () => Array.from({ length: maxMeetings }, (_, i) => i + 1),
         [maxMeetings]

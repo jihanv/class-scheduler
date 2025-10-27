@@ -71,10 +71,11 @@ function dateKey(d: Date) {
 }
 
 export default function ExportExcelButtonJa() {
-    const { startDate, endDate, schedule, sections, pendingHolidays } =
+    const { startDate, endDate, schedule, sections, pendingHolidays, commitPendingHolidays } =
         useScheduleStore();
 
     const handleExport = async () => {
+        commitPendingHolidays();
         if (!startDate || !endDate) {
             alert("先に開始日と終了日を選択してください。");
             return;
