@@ -62,6 +62,8 @@ export type ScheduleStore = {
   pendingHolidays: Date[];
   setPendingHolidays: (dates: Date[]) => void;
   commitPendingHolidays: () => void;
+
+  resetAll: () => void;
 };
 
 function detectBrowserLanguage(): Language {
@@ -104,24 +106,40 @@ export const useScheduleStore = create<ScheduleStore>()(
 
       removeSection: (section) =>
         set((state) => {
-          // Clone the schedule and delete any cell that matches the removed section
-          const nextSchedule: typeof state.schedule = { ...state.schedule };
+          const nextSections = state.sections.filter((s) => s !== section);
+
+          // scrub this section from every day/period cell
+          const nextSchedule = { ...state.schedule };
           for (const day of Object.keys(
             nextSchedule
           ) as (keyof typeof nextSchedule)[]) {
             const dayMap = { ...(nextSchedule[day] ?? {}) };
             for (const p of Object.keys(dayMap)) {
-              if (dayMap[Number(p)] === section) {
-                delete dayMap[Number(p)];
-              }
+              if (dayMap[Number(p)] === section) delete dayMap[Number(p)];
             }
             nextSchedule[day] = dayMap;
           }
 
-          return {
-            sections: state.sections.filter((s) => s !== section),
-            schedule: nextSchedule,
-          };
+          // if no sections left → full reset
+          if (nextSections.length === 0) {
+            return {
+              uiLanguage: state.uiLanguage,
+              courseName: "",
+              displayName: "",
+              startDate: undefined,
+              endDate: undefined,
+              holidays: [],
+              pendingHolidays: [],
+              sections: [],
+              schedule: emptySchedule(),
+              showDateSelector: false,
+              showHolidaySelector: true,
+              showPeriodSelector: false,
+              showWeeklyPreview: false,
+            };
+          }
+
+          return { sections: nextSections, schedule: nextSchedule };
         }),
 
       startDate: undefined,
@@ -261,6 +279,32 @@ export const useScheduleStore = create<ScheduleStore>()(
           uiLanguage: language,
         }));
       },
+      resetAll: () =>
+        set((state) => ({
+          // keep language preference
+          uiLanguage: state.uiLanguage,
+
+          // names
+          courseName: "",
+          displayName: "",
+
+          // dates & holidays
+          startDate: undefined,
+          endDate: undefined,
+          holidays: [],
+          pendingHolidays: [],
+
+          // timetable
+          sections: [],
+          schedule: emptySchedule(), // your initial grid
+          //                           // (you already import this)
+          //                           // ✔︎ resets to blank schedule
+          // UI toggles (match your initial defaults)
+          showDateSelector: false,
+          showHolidaySelector: true,
+          showPeriodSelector: false,
+          showWeeklyPreview: false,
+        })),
     }),
     {
       name: "class-schedule-storage",
