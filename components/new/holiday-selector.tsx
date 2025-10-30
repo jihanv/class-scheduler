@@ -85,7 +85,7 @@ export default function HolidaySelector() {
                 .filter((d) => !isBefore(d, sd) && !isAfter(d, ed));
 
             // Merge with existing holidays; your store will unique + sort on setHolidays
-            const merged = [...holidays, ...fetchedDates];
+            const merged = [...pendingHolidays, ...fetchedDates];
             setHolidays(merged);
         } catch (e) {
             console.error("Failed adding national holidays", e);
