@@ -101,3 +101,35 @@ export const ALIGN_CENTER_ONE: Readonly<Partial<Alignment>> = {
   horizontal: "center",
   wrapText: false,
 } as const;
+
+export type SpecialEventType = "extra" | "cancel" | "move";
+
+export type SpecialEventBase = {
+  type: SpecialEventType;
+  // The “from” info for cancel/move identifies an existing slot
+  date: Date; // local date (no time)
+  period: number; // 1..N from PERIODS
+  section?: string; // optional; if omitted, apply to any section assigned in that slot
+};
+
+export type SpecialEventExtra = {
+  type: "extra";
+  date: Date;
+  period: number;
+  section: string; // required for extra
+};
+
+export type SpecialEventCancel = SpecialEventBase & {
+  type: "cancel";
+};
+
+export type SpecialEventMove = SpecialEventBase & {
+  type: "move";
+  toDate: Date;
+  toPeriod: number;
+};
+
+export type SpecialEvent =
+  | SpecialEventExtra
+  | SpecialEventCancel
+  | SpecialEventMove;
